@@ -11,5 +11,4 @@
 .gitignore      export-ignore
 
 # Set unknown languages types
-#*.sql linguist-detectable=true
 *.swql linguist-language=sql

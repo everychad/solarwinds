@@ -10,20 +10,23 @@
 -- out of the use of or inability to use the scripts or documentation.
 
 --Directions for use
---1. Update the line 'AND v.ViewGroupName LIKE '%Node Details%'' and update 
+--** Update the line 'AND v.ViewGroupName LIKE '%Node Details%'' and update 
 --   'Node Details' to filter the dashboards you want to show.
---2. On a dashboard, add a widget called ‘Custom Query’
---3. Edit that dashboard page and paste the query into the query box.
---4. Check ‘Enable search’
---5. Paste the query again in to the second query box
---6. Remove the comment on the second to last line for only the second query box.
---7. Click submit.
+--** Update the line ',CONCAT('https://<INSERT DOMAIN HERE>/Orion...' with the domain
+--   name of your SolarWinds instance
+
+--1. On a dashboard, add a widget called ‘Custom Query’
+--2. Edit that dashboard page and paste the query into the query box.
+--3. Check ‘Enable search’
+--4. Paste the query again in to the second query box
+--5. Remove the comment on the second to last line for only the second query box.
+--6. Click submit.
 
 SELECT
     CASE
      when v.ViewGroupName NOT LIKE '' THEN (CONCAT(v.ViewGroupName,' - ', v.ViewTitle)) END AS [View Name]
     ,v.ViewType AS [View Type]
-    ,CONCAT('https://solarwinds.slalom.com/Orion/SummaryView.aspx?ViewID=',v.ViewID ) AS [_Linkfor_View Name]
+    ,CONCAT('https://<INSERT DOMAIN HERE>/Orion/SummaryView.aspx?ViewID=',v.ViewID ) AS [_Linkfor_View Name]
 FROM Orion.Views v
 WHERE v.ViewGroupName NOT LIKE ''
     AND v.ViewGroupName LIKE '%Node Details%'

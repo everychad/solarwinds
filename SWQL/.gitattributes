@@ -1,0 +1,3 @@
+# Set unknown languages types
+*.swql linguist-detectable=true
+*.swql linguist-language=sql

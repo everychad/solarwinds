@@ -15,7 +15,8 @@
 --  egress, ingress, and combined. Used to show current month traffic usage.
 -- Directions: 
 --  Update the WHERE clause to include the name of the inferface as well as the
---  respective NodeID.
+--  respective NodeID. Depending on how you want the widget to be displayed you 
+--  can uncomment out the other ROUND lines to include what you want.
 
 SELECT
     ROUND((SUM(InTotalBytes)/1024/1024/1024),0) AS [In Total GB]

@@ -1,0 +1,31 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+--Directions for use
+--1. Update the line 'AND v.ViewGroupName LIKE '%Node Details%'' and update 
+--   'Node Details' to filter the dashboards you want to show.
+--2.	On a dashboard, add a widget called ‘Custom Query’
+--3.	Edit that dashboard page and paste the query into the query box.
+--4.	Check ‘Enable search’
+--5.	Paste the query again in to the second query box
+--6.	Remove the comment on the second to last line for only the second query box.
+--7.	Click submit.
+
+SELECT
+    CASE
+     when v.ViewGroupName NOT LIKE '' THEN (CONCAT(v.ViewGroupName,' - ', v.ViewTitle)) END AS [View Name]
+    ,v.ViewType AS [View Type]
+    ,CONCAT('https://solarwinds.slalom.com/Orion/SummaryView.aspx?ViewID=',v.ViewID ) AS [_Linkfor_View Name]
+FROM Orion.Views v
+WHERE v.ViewGroupName NOT LIKE ''
+    AND v.ViewGroupName LIKE '%Node Details%'
+    --AND (v.ViewTitle LIKE '%${SEARCH_STRING}%' OR v.ViewGroupName LIKE '%${SEARCH_STRING}%')
+ORDER BY [View Name],v.ViewGroupPosition ASC

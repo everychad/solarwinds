@@ -12,12 +12,12 @@
 --Directions for use
 --1. Update the line 'AND v.ViewGroupName LIKE '%Node Details%'' and update 
 --   'Node Details' to filter the dashboards you want to show.
---2.	On a dashboard, add a widget called ‘Custom Query’
---3.	Edit that dashboard page and paste the query into the query box.
---4.	Check ‘Enable search’
---5.	Paste the query again in to the second query box
---6.	Remove the comment on the second to last line for only the second query box.
---7.	Click submit.
+--2. On a dashboard, add a widget called ‘Custom Query’
+--3. Edit that dashboard page and paste the query into the query box.
+--4. Check ‘Enable search’
+--5. Paste the query again in to the second query box
+--6. Remove the comment on the second to last line for only the second query box.
+--7. Click submit.
 
 SELECT
     CASE

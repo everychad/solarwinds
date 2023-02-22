@@ -12,6 +12,8 @@
 -- URL: N/A
 -- Description: This query finds all application based monitors that are stale and
 --  not monitoring but looking at the last polled interval.
+-- Directions: This query can be added to a report as a custom table with an
+--  advanced SWQL datasource.
 
 SELECT 
     a.Node.DisplayName AS [Node Name]

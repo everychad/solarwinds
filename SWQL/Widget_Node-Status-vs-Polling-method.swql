@@ -12,8 +12,11 @@
 -- URL: https://thwack.solarwinds.com/content-exchange/the-orion-platform/m/custom-queries/3467
 -- Description: I needed the ability to show the method of node status calculation vs polling method
 --  
--- Directions: Add a custom query resource to a Node Details page and paste this query into the box.
---  
+-- Directions:
+-- 1. On a dashboard, add a widget called ‘Custom Query’
+-- 2. Edit that dashboard page and paste the query into the query box.
+-- 3. Update the Title of the Widget
+-- 4. Click submit.
 
 SELECT 
  Caption AS [Node Name] 

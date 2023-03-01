@@ -15,12 +15,12 @@
 --** Update the line ',CONCAT('https://<INSERT DOMAIN HERE>/Orion...' with the domain
 --   name of your SolarWinds instance
 
---1. On a dashboard, add a widget called ‘Custom Query’
---2. Edit that dashboard page and paste the query into the query box.
---3. Check ‘Enable search’
---4. Paste the query again in to the second query box
---5. Remove the comment on the second to last line for only the second query box.
---6. Click submit.
+-- 1. On a dashboard, add a widget called ‘Custom Query’
+-- 2. Edit that dashboard page and paste the query into the query box.
+-- 3. Check ‘Enable search’
+-- 4. Paste the query again in to the second query box
+-- 5. Remove the comment on the second to last line for only the second query box.
+-- 6. Click submit.
 
 SELECT
     CASE

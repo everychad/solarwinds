@@ -21,6 +21,7 @@
 SELECT 
   Name AS [Node Status Issue]
 , oncsd.DetailsUrl AS [_Linkfor_Node Status Issue]
+, '/Orion/images/StatusIcons/Small-' + oncsd.StatusIcon as [_IconFor_Node Status Issue]
 , osi.StatusName AS [Status]
 FROM Orion.NodeChildStatusDetail oncsd
 JOIN Orion.StatusInfo osi ON osi.StatusId = oncsd.Status

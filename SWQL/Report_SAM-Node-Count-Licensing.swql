@@ -1,0 +1,31 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+-- URL: https://thwack.solarwinds.com/water-cooler/f/basics-of-server-management/486/orion-enterprise-license-polling-report-observability-nam-sam-report
+-- Description: This query is part of the published Thwack report from the link above.
+--  
+-- Directions: Follow the instructions from the link above to import the report into your SolarWinds deployment
+--  
+
+SELECT 
+(SELECT 
+  COUNT(DISTINCT NodeID) AS [SAM Nodes]
+ FROM Orion.Nodes n
+ WHERE (n.Applications.ApplicationTemplateID IS NOT NULL 
+  OR n.ApiPollers.ID IS NOT NULL)) AS [SAM Node License Count] 
+,COUNT(DISTINCT a.NodeID) AS [Nodes with Templates]
+,(SELECT 
+    COUNT(DISTINCT a.Node.NodeID) AS [API Poller]
+ FROM Orion.APIPoller.ApiPoller a) AS [Nodes with API Pollers]
+,COUNT(DISTINCT b.NodeID) AS [Nodes with Asset Inventory]
+,COUNT(a.Components.ComponentID) AS [Total Component Count]
+FROM Orion.APM.Application a
+FULL JOIN Orion.AssetInventory.Polling b ON a.NodeID = b.NodeID

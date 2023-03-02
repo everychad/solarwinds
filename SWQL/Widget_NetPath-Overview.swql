@@ -1,0 +1,51 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+-- URL: N/A
+-- Description: This allows you to have a widget on a classic dashabord showing the status of certin netpath probes/services
+--  
+-- Directions:
+-- 1. Update the WHERE clause for this query with the service name you'd like to show.
+-- 2. On a dashboard, add a widget called ‘Custom Query’
+-- 2. Edit that dashboard page and paste the query into the query box.
+-- 6. Click submit.
+
+SELECT [SA].ProbeName AS [Source]
+     , [SA].ServiceName AS [Destination]
+     , [SA].DetailsUrl AS [_LinkFor_Source]
+     , CONCAT('/Orion/images/StatusIcons/Small-', [SI].IconPostfix, '.gif') AS [_IconFor_Source] -- This is the status for the most recent poll only
+     , CONCAT(ROUND([Tests].MinLatency, 0), ' / ', ROUND([Tests].AvgLatency, 0), ' / ', ROUND([Tests].MaxLatency, 0) ) AS [Min/Avg/Max Latency (ms)]
+     , CONCAT(ROUND([Tests].MinPacketLoss, 1), ' / ', ROUND([Tests].AvgPacketLoss, 1), ' / ', ROUND([Tests].MaxPacketLoss, 1) ) AS [Min/Avg/Max Packet Loss (%)]
+FROM Orion.NetPath.ServiceAssignments AS [SA]
+INNER JOIN Orion.StatusInfo AS [SI]
+   ON [SA].Status = [SI].StatusID
+INNER JOIN (
+    SELECT EndpointServiceID
+         , ProbeID
+         , MIN(Rtt) AS MinLatency
+         , AVG(Rtt) AS AvgLatency
+         , MAX(Rtt) AS MaxLatency
+         , MIN(PacketLoss) AS MinPacketLoss
+         , AVG(PacketLoss) AS AvgPacketLoss
+         , MAX(PacketLoss) AS MaxPacketLoss
+    FROM Orion.NetPath.Tests
+    WHERE ExecutedAt >= ADDMINUTE(-30, GETUTCDATE())  -- ExecutedAt is stored in UTC, reading the past 30 minutes of NetPath Data.
+    GROUP BY EndpointServiceID, ProbeID
+) AS [Tests]
+ON  [Tests].ProbeID = [SA].ProbeID
+AND [Tests].EndpointServiceID = [SA].EndpointServiceID
+WHERE ([SA].ServiceName='SolarWinds' -- This is the NetPath Service Name as displayed on your NetPath summary page
+ OR [SA].ServiceName='Facebook' -- This is the NetPath Service Name as displayed on your NetPath summary page
+ OR [SA].ServiceName='Instagram' -- This is the NetPath Service Name as displayed on your NetPath summary page
+ OR [SA].ServiceName='Google'  -- This is the NetPath Service Name as displayed on your NetPath summary page
+ OR [SA].ServiceName='Disney Plus') -- This is the NetPath Service Name as displayed on your NetPath summary page
+  AND [SA].Enabled = 'True'
+ORDER BY [Tests].MaxPacketLoss DESC,[Tests].MaxLatency DESC

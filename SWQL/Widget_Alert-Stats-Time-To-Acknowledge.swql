@@ -1,0 +1,46 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+-- URL: https://thwack.solarwinds.com/product-forums/server-application-monitor-sam/f/forum/36909/new-modern-dashboard---alert-stats
+-- Description: This widget shows the time to acknowledge an alert and the time for an alert to clear/close.
+--  
+-- Directions: See URL link above
+--  
+
+SELECT 
+ ROUND( AVG( TOSTRING(MINUTEDIFF(ah.TimeStamp,ack.timestamp))),2) AS [Minutes Until Acknowledged]
+,ROUND( AVG( TOSTRING(MINUTEDIFF(ah.TimeStamp,reset.timestamp))),2) AS [Minutes Until Reset]
+FROM Orion.AlertHistory ah
+LEFT JOIN Orion.AlertObjects ao ON ao.alertobjectid=ah.alertobjectid
+LEFT JOIN Orion.AlertConfigurations ac ON ac.alertid=ao.alertid
+LEFT JOIN (SELECT 
+            timestamp
+            , AlertActiveID
+            , AlertObjectID
+            ,message 
+           FROM orion.alerthistory ah 
+           WHERE eventtype=2) ack 
+            ON ack.alertactiveid=ah.AlertActiveID 
+            AND ack.alertobjectid=ah.AlertObjectID
+LEFT JOIN (SELECT 
+            timestamp
+            , AlertActiveID
+            , AlertObjectID 
+           FROM orion.alerthistory ah 
+           WHERE eventtype=1) reset 
+            ON reset.alertactiveid=ah.AlertActiveID 
+            AND reset.alertobjectid=ah.AlertObjectID
+WHERE
+    DAYDIFF(ah.timestamp,GETUTCDATE())<7
+    AND ah.eventtype=0
+    AND ac.Severity IN (1,2,3)
+    AND ack.timestamp IS NOT NULL
+    AND reset.timestamp IS NOT NULL

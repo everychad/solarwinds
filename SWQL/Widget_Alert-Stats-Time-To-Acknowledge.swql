@@ -19,8 +19,10 @@ SELECT
  ROUND( AVG( TOSTRING(MINUTEDIFF(ah.TimeStamp,ack.timestamp))),2) AS [Minutes Until Acknowledged]
 ,ROUND( AVG( TOSTRING(MINUTEDIFF(ah.TimeStamp,reset.timestamp))),2) AS [Minutes Until Reset]
 FROM Orion.AlertHistory ah
-LEFT JOIN Orion.AlertObjects ao ON ao.alertobjectid=ah.alertobjectid
-LEFT JOIN Orion.AlertConfigurations ac ON ac.alertid=ao.alertid
+LEFT JOIN Orion.AlertObjects ao 
+ ON ao.alertobjectid=ah.alertobjectid
+LEFT JOIN Orion.AlertConfigurations ac 
+ ON ac.alertid=ao.alertid
 LEFT JOIN (SELECT 
             timestamp
             , AlertActiveID
@@ -28,16 +30,16 @@ LEFT JOIN (SELECT
             ,message 
            FROM orion.alerthistory ah 
            WHERE eventtype=2) ack 
-            ON ack.alertactiveid=ah.AlertActiveID 
-            AND ack.alertobjectid=ah.AlertObjectID
+ ON ack.alertactiveid=ah.AlertActiveID 
+ AND ack.alertobjectid=ah.AlertObjectID
 LEFT JOIN (SELECT 
             timestamp
             , AlertActiveID
             , AlertObjectID 
            FROM orion.alerthistory ah 
            WHERE eventtype=1) reset 
-            ON reset.alertactiveid=ah.AlertActiveID 
-            AND reset.alertobjectid=ah.AlertObjectID
+ ON reset.alertactiveid=ah.AlertActiveID 
+ AND reset.alertobjectid=ah.AlertObjectID
 WHERE
     DAYDIFF(ah.timestamp,GETUTCDATE())<7
     AND ah.eventtype=0

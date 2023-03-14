@@ -1,0 +1,38 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+-- URL: N/A
+-- Description: This shows a table view of netflow collection per polling engine.
+--  
+-- Directions:
+-- 1. On a dashboard, add a widget called ‘Custom Query’
+-- 2. Edit that dashboard page and paste the query into the query box.
+-- 3. Update the Title of the Widget
+-- 4. Click submit.
+
+SELECT 
+  e.ServerName AS [Polling Engine Name]
+, a24h.StatisticsValue AS [Avg 24 Hour Flows/sec]
+, a3d.StatisticsValue AS [Avg 3 Day Flows/sec]
+, a5m.StatisticsValue AS [Avg 5 Minute Flows/sec]
+FROM Orion.Engines e 
+JOIN (SELECT EngineID, StatisticsName, StatisticsValue 
+      FROM Orion.Netflow.NetFlowEnginesStatistics 
+      WHERE StatisticsName = 'FlowsPerSecondForLast24Hours') a24h 
+      ON a24h.EngineID = e.EngineID
+JOIN (SELECT EngineID, StatisticsName, StatisticsValue 
+      FROM Orion.Netflow.NetFlowEnginesStatistics 
+      WHERE StatisticsName = 'FlowsPerSecondForLast3Days') a3d 
+      ON a3d.EngineID = e.EngineID
+JOIN (SELECT EngineID, StatisticsName, StatisticsValue 
+      FROM Orion.Netflow.NetFlowEnginesStatistics 
+      WHERE StatisticsName = 'FlowsPerSecondForLast5Minutes') a5m 
+      ON a5m.EngineID = e.EngineID

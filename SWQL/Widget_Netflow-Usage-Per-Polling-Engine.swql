@@ -37,3 +37,4 @@ FULL JOIN (SELECT EngineID, StatisticsName, StatisticsValue
       WHERE StatisticsName = 'FlowsPerSecondForLast5Minutes') a5m 
       ON a5m.EngineID = e.EngineID
 WHERE e.ServerType != 'RemoteCollector'
+ORDER BY a5m.StatisticsValue DESC

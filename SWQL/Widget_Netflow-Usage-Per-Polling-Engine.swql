@@ -24,15 +24,16 @@ SELECT
 , a24h.StatisticsValue AS [Avg 24 Hour Flows/sec]
 , a3d.StatisticsValue AS [Avg 3 Day Flows/sec]
 FROM Orion.Engines e 
-JOIN (SELECT EngineID, StatisticsName, StatisticsValue 
+FULL JOIN (SELECT EngineID, StatisticsName, StatisticsValue 
       FROM Orion.Netflow.NetFlowEnginesStatistics 
       WHERE StatisticsName = 'FlowsPerSecondForLast24Hours') a24h 
       ON a24h.EngineID = e.EngineID
-JOIN (SELECT EngineID, StatisticsName, StatisticsValue 
+FULL JOIN (SELECT EngineID, StatisticsName, StatisticsValue 
       FROM Orion.Netflow.NetFlowEnginesStatistics 
       WHERE StatisticsName = 'FlowsPerSecondForLast3Days') a3d 
       ON a3d.EngineID = e.EngineID
-JOIN (SELECT EngineID, StatisticsName, StatisticsValue 
+FULL JOIN (SELECT EngineID, StatisticsName, StatisticsValue 
       FROM Orion.Netflow.NetFlowEnginesStatistics 
       WHERE StatisticsName = 'FlowsPerSecondForLast5Minutes') a5m 
       ON a5m.EngineID = e.EngineID
+WHERE e.ServerType != 'RemoteCollector'

@@ -20,6 +20,7 @@
 
 SELECT 
   e.ServerName AS [Polling Engine Name]
+, e.ServerType AS [Polling Engine Type]
 , a5m.StatisticsValue AS [Avg 5 Minute Flows/sec]
 , a24h.StatisticsValue AS [Avg 24 Hour Flows/sec]
 , a3d.StatisticsValue AS [Avg 3 Day Flows/sec]

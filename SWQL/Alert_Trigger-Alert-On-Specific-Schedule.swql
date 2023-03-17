@@ -1,0 +1,44 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+-- URL:
+-- Description: 
+--  
+-- Directions:
+--  
+
+-------------------------------------
+-- THIS IS STILL A WORK IN PROGESS --
+-------------------------------------
+
+SELECT
+   NodeID
+  ,Caption
+  ,DOWNSAMPLE(GETDATE(),'00:00:01') AS [DATE Current]
+  ,DAY(GETDATE()) AS [DATE Day]
+  ,WEEKDAY(GETDATE()) AS [DATE Weekday]
+  ,HOUR(GETDATE()) AS [DATE Hour]
+  ,MINUTE(GETDATE()) AS [DATE Minute]
+FROM Orion.Nodes n 
+WHERE
+  --Find the nth week of each month
+  --DAY(GETDATE()) IN (1,2,3,4,5,6,7) --Days that the 1st week of each month could be  
+  --DAY(GETDATE()) IN (8,9,10,11,12,13,14) --Days that the 2nd week of each month could be
+  DAY(GETDATE()) IN (15,16,17,18,19,20,21) --Days that the 3rd week of each month could be
+  --DAY(GETDATE()) IN (22,23,24,25,26,27,28) --Days that the 4th week of each month could be
+
+  --Set the day of the WEEK
+  --Sunday = 0, Monday = 1, Tuesday = 2, Wednesday = 3, Thursday = 4, Friday = 5, Saturday = 6
+  AND WEEKDAY(GETDATE()) = 3
+  
+  --Start at 10:00pm at night
+  AND HOUR(GETDATE()) = 22 --Start at 10pm (24hr format)
+  AND MINUTE(GETDATE()) = 0 --Start at 00 minutes into the hour

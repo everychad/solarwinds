@@ -10,7 +10,7 @@
 -- out of the use of or inability to use the scripts or documentation.
 
 -- URL:
--- Description: 
+-- Description: This query is a report that shows all dependencies (Parent/Child) relationships in the SolarWinds Platform.
 --  Query used from: https://thwack.solarwinds.com/product-forums/network-performance-monitor-npm/f/forum/65966/report-on-parent-child-dependency/193351#193351
 -- Directions:
 --  

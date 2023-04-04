@@ -24,6 +24,12 @@ SELECT
     WHEN gp.Name IS NOT NULL THEN gp.Name --Group Parent
     WHEN tp.Name IS NOT NULL THEN tp.Name --Transaction Parent
     WHEN ip.FullName IS NOT NULL THEN ip.FullName --Interface Parent
+    WHEN iisp.Name IS NOT NULL THEN iisp.Name --AppInsight: IIS App Parent
+    WHEN iisap.Name IS NOT NULL THEN iisap.Name --AppInsight: IIS App Pool Parent
+    WHEN iissp.Name IS NOT NULL THEN iissp.Name --AppInsight: IIS Site Parent
+    WHEN sqlp.Name IS NOT NULL THEN sqlp.Name --AppInsight: Database Parent
+    WHEN sqlap.Name IS NOT NULL THEN sqlap.Name --AppInsight: SQL Applcation Parent
+    WHEN tsp.DisplayName IS NOT NULL THEN tsp.DisplayName --WPM Step Parent
  END AS [Parent]
 ,Replace(Replace(Replace(d.ChildEntityType,'Orion.',''),'SEUM.','WPM '),'s','') AS [Child Type] 
 ,CASE WHEN nc.Caption IS NOT NULL THEN nc.Caption
@@ -31,18 +37,42 @@ SELECT
     WHEN gc.Name IS NOT NULL THEN gc.Name --Group Parent
     WHEN tc.Name IS NOT NULL THEN tc.Name --Transaction Parent
     WHEN ic.FullName IS NOT NULL THEN ic.FullName --Interface Parent
+    WHEN iisc.Name IS NOT NULL THEN iisc.Name --AppInsight: IIS App Child
+    WHEN iisac.Name IS NOT NULL THEN iisac.Name --AppInsight: IIS App Pool Child
+    WHEN iissc.Name IS NOT NULL THEN iissc.Name --AppInsight: IIS Site Child
+    WHEN sqlc.Name IS NOT NULL THEN sqlc.Name --AppInsight: Database Child
+    WHEN sqlac.Name IS NOT NULL THEN sqlac.Name -- AppInsight: SQL Applcation Child
+    WHEN tsc.DisplayName IS NOT NULL THEN tsc.DisplayName --WPM Step Child
  END AS [Child]
 
-FROM OriON.Dependencies d
-LEFT JOIN oriON.nodes np ON np.Uri=d.ParentUri --Nodes
-LEFT JOIN oriON.nodes nc ON nc.Uri=d.ChildUri --Nodes
-LEFT JOIN oriON.apm.Application ap ON ap.Uri=d.ParentUri --Applications
-LEFT JOIN oriON.apm.Application ac ON ac.Uri=d.ChildUri --Applications
-LEFT JOIN oriON.Groups gp ON gp.Uri=d.ParentUri --Groups
-LEFT JOIN oriON.Groups gc ON gc.Uri=d.ChildUri --Groups
-LEFT JOIN oriON.seum.Transactions tp ON tp.Uri=d.ParentUri --Transactions
-LEFT JOIN oriON.seum.Transactions tc ON tc.Uri=d.ChildUri --Transactions
-LEFT JOIN oriON.npm.Interfaces ip ON ip.Uri=d.ParentUri --Interfaces
-LEFT JOIN oriON.npm.Interfaces ic ON ic.Uri=d.ChildUri --Interfaces
+FROM Orion.Dependencies d
+LEFT JOIN Orion.nodes np ON np.Uri=d.ParentUri --Nodes
+LEFT JOIN Orion.nodes nc ON nc.Uri=d.ChildUri --Nodes
+LEFT JOIN Orion.apm.Application ap ON ap.Uri=d.ParentUri --Applications
+LEFT JOIN Orion.apm.Application ac ON ac.Uri=d.ChildUri --Applications
+LEFT JOIN Orion.Groups gp ON gp.Uri=d.ParentUri --Groups
+LEFT JOIN Orion.Groups gc ON gc.Uri=d.ChildUri --Groups
+LEFT JOIN Orion.seum.Transactions tp ON tp.Uri=d.ParentUri --WPM Transactions
+LEFT JOIN Orion.seum.Transactions tc ON tc.Uri=d.ChildUri --WPM Transactions
+LEFT JOIN Orion.npm.Interfaces ip ON ip.Uri=d.ParentUri --Interfaces
+LEFT JOIN Orion.npm.Interfaces ic ON ic.Uri=d.ChildUri --Interfaces
+LEFT JOIN Orion.APM.IIS.Application iisp ON iisp.Uri=d.ParentUri --AppInsight: IIS App
+LEFT JOIN Orion.APM.IIS.Application iisc ON iisc.Uri=d.ChildUri --AppInsight: IIS App
+LEFT JOIN Orion.APM.IIS.ApplicationPool iisap ON iisap.Uri=d.ParentUri --AppInsight: IIS App Pool
+LEFT JOIN Orion.APM.IIS.ApplicationPool iisac ON iisac.Uri=d.ChildUri --AppInsight: IIS App Pool
+LEFT JOIN Orion.APM.IIS.Site iissp ON iissp.Uri=d.ParentUri --AppInsight: IIS Site
+LEFT JOIN Orion.APM.IIS.Site iissc ON iissc.Uri=d.ChildUri --AppInsight: IIS Site
+LEFT JOIN Orion.APM.SqlDatabase sqlp ON sqlp.Uri=d.ParentUri --AppInsight: Database
+LEFT JOIN Orion.APM.SqlDatabase sqlc ON sqlp.Uri=d.ChildUri --AppInsight: Database
+LEFT JOIN Orion.APM.SqlServerApplication sqlap ON sqlap.Uri = d.ParentUri --AppInsight: SQL Application
+LEFT JOIN Orion.APM.SqlServerApplication sqlac ON sqlac.Uri = d.ChildUri --AppInsight: SQL Application
+LEFT JOIN Orion.SEUM.TransactionSteps tsp ON tsp.Uri = d.ParentUri --WPM Steps
+LEFT JOIN Orion.SEUM.TransactionSteps tsc ON tsc.Uri = d.ChildUri --WPM Steps
 
 ORDER BY d.Name
+
+
+--to do
+--Player Locations
+--Database Instances
+--LUNs

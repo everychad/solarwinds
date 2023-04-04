@@ -30,6 +30,7 @@ SELECT
     WHEN sqlp.Name IS NOT NULL THEN sqlp.Name --AppInsight: Database Parent
     WHEN sqlap.Name IS NOT NULL THEN sqlap.Name --AppInsight: SQL Applcation Parent
     WHEN tsp.DisplayName IS NOT NULL THEN tsp.DisplayName --WPM Step Parent
+    WHEN wpmap.Name IS NOT NULL THEN wpmap.Name -- WPM Location Parent
  END AS [Parent]
 ,Replace(Replace(Replace(d.ChildEntityType,'Orion.',''),'SEUM.','WPM '),'s','') AS [Child Type] 
 ,CASE WHEN nc.Caption IS NOT NULL THEN nc.Caption
@@ -43,6 +44,7 @@ SELECT
     WHEN sqlc.Name IS NOT NULL THEN sqlc.Name --AppInsight: Database Child
     WHEN sqlac.Name IS NOT NULL THEN sqlac.Name -- AppInsight: SQL Applcation Child
     WHEN tsc.DisplayName IS NOT NULL THEN tsc.DisplayName --WPM Step Child
+    WHEN wpmac.Name IS NOT NULL THEN wpmac.Name -- WPM Location Child
  END AS [Child]
 
 FROM Orion.Dependencies d
@@ -68,11 +70,12 @@ LEFT JOIN Orion.APM.SqlServerApplication sqlap ON sqlap.Uri = d.ParentUri --AppI
 LEFT JOIN Orion.APM.SqlServerApplication sqlac ON sqlac.Uri = d.ChildUri --AppInsight: SQL Application
 LEFT JOIN Orion.SEUM.TransactionSteps tsp ON tsp.Uri = d.ParentUri --WPM Steps
 LEFT JOIN Orion.SEUM.TransactionSteps tsc ON tsc.Uri = d.ChildUri --WPM Steps
+LEFT JOIN Orion.SEUM.Agents wpmap ON wpmap.Uri = d.ParentUri --WPM Location (Agents)
+LEFT JOIN Orion.SEUM.Agents wpmac ON wpmac.Uri = d.ChildUri --WPM Location (Agents)
 
 ORDER BY d.Name
 
 
 --to do
---Player Locations
 --Database Instances
 --LUNs

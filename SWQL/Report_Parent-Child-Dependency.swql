@@ -18,7 +18,7 @@
 
 SELECT 
  d.Name AS [Dependency]
-,Replace(Replace(Replace(d.ParentEntityType,'Orion.',''),'SEUM.','WPM '),'s','') AS [Parent Type] 
+,Replace(Replace(Replace(d.ParentEntityType,'Orion.',''),'SEUM.','WPM '),'DPA.','') AS [Parent Type] 
 ,CASE 
     WHEN np.Caption IS NOT NULL THEN np.Caption --Node Parent
     WHEN gp.Name IS NOT NULL THEN gp.Name --Group Parent
@@ -35,7 +35,7 @@ SELECT
     WHEN lp.Name IS NOT NULL THEN lp.Name -- SRM LUN Parent
     WHEN dp.Name IS NOT NULL THEN dp.Name -- Database Instance Parent
  END AS [Parent]
-,Replace(Replace(Replace(d.ChildEntityType,'Orion.',''),'SEUM.','WPM '),'s','') AS [Child Type] 
+,Replace(Replace(Replace(d.ChildEntityType,'Orion.',''),'SEUM.','WPM '),'DPA.','') AS [Child Type] 
 ,CASE 
     WHEN nc.Caption IS NOT NULL THEN nc.Caption --Node Child
     WHEN gc.Name IS NOT NULL THEN gc.Name --Group Child
@@ -78,8 +78,8 @@ LEFT JOIN Orion.SEUM.TransactionSteps tsp ON tsp.Uri = d.ParentUri --WPM Steps
 LEFT JOIN Orion.SEUM.TransactionSteps tsc ON tsc.Uri = d.ChildUri --WPM Steps
 LEFT JOIN Orion.SEUM.Agents wpmap ON wpmap.Uri = d.ParentUri --WPM Location (Agents)
 LEFT JOIN Orion.SEUM.Agents wpmac ON wpmac.Uri = d.ChildUri --WPM Location (Agents)
-LEFT JOIN Orion.SRM.LUNs lp ON lp.Uri = d.ParentUri --SRM Lun
-LEFT JOIN Orion.SRM.LUNs lc ON lc.Uri = d.ChildUri --SRM Lun
+LEFT JOIN Orion.SRM.LUNs lp ON lp.Uri = d.ParentUri --SRM LUN
+LEFT JOIN Orion.SRM.LUNs lc ON lc.Uri = d.ChildUri --SRM LUN
 LEFT JOIN Orion.DPA.DatabaseInstance dp ON dp.Uri = d.ParentUri --Database Instance
 LEFT JOIN Orion.DPA.DatabaseInstance dc ON dc.Uri = d.ChildUri --Database Instance
 

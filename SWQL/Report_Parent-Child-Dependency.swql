@@ -9,12 +9,11 @@
 -- interruption, loss of business information, or other pecuniary loss) arising 
 -- out of the use of or inability to use the scripts or documentation.
 
--- URL:
+-- URL: https://thwack.solarwinds.com/content-exchange/the-orion-platform/m/reports/3742
 -- Description: This query is a report that shows all dependencies (Parent/Child) relationships in the SolarWinds Platform.
---  Query used from: https://thwack.solarwinds.com/product-forums/network-performance-monitor-npm/f/forum/65966/report-on-parent-child-dependency/193351#193351
+-- 
 -- Directions:
 --  
-
 
 SELECT 
  d.Name AS [Dependency]

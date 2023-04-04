@@ -10,10 +10,10 @@
 -- out of the use of or inability to use the scripts or documentation.
 
 -- URL: https://thwack.solarwinds.com/content-exchange/the-orion-platform/m/reports/3742
--- Description: This query is a report that shows all dependencies (Parent/Child) relationships in the SolarWinds Platform.
--- 
--- Directions:
---  
+-- Description: This query is a report that shows all dependencies (Parent/Child) 
+--  relationships in the SolarWinds Platform.
+-- Directions: This query can be added to a report as a custom table with an
+--  advanced SWQL datasource.
 
 SELECT 
  d.Name AS [Dependency]

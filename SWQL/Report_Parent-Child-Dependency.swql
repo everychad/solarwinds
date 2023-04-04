@@ -19,63 +19,68 @@
 SELECT 
  d.Name AS [Dependency]
 ,Replace(Replace(Replace(d.ParentEntityType,'Orion.',''),'SEUM.','WPM '),'s','') AS [Parent Type] 
-,CASE WHEN np.Caption IS NOT NULL THEN np.Caption
-    WHEN ap.Name IS NOT NULL THEN ap.Name --Application Parent
+,CASE 
+    WHEN np.Caption IS NOT NULL THEN np.Caption --Node Parent
     WHEN gp.Name IS NOT NULL THEN gp.Name --Group Parent
-    WHEN tp.Name IS NOT NULL THEN tp.Name --Transaction Parent
     WHEN ip.FullName IS NOT NULL THEN ip.FullName --Interface Parent
+    WHEN ap.Name IS NOT NULL THEN ap.Name --Application Parent
     WHEN iisp.Name IS NOT NULL THEN iisp.Name --AppInsight: IIS App Parent
     WHEN iisap.Name IS NOT NULL THEN iisap.Name --AppInsight: IIS App Pool Parent
     WHEN iissp.Name IS NOT NULL THEN iissp.Name --AppInsight: IIS Site Parent
     WHEN sqlp.Name IS NOT NULL THEN sqlp.Name --AppInsight: Database Parent
     WHEN sqlap.Name IS NOT NULL THEN sqlap.Name --AppInsight: SQL Applcation Parent
+    WHEN tp.Name IS NOT NULL THEN tp.Name --WPM Transaction Parent
     WHEN tsp.DisplayName IS NOT NULL THEN tsp.DisplayName --WPM Step Parent
     WHEN wpmap.Name IS NOT NULL THEN wpmap.Name -- WPM Location Parent
+    WHEN lp.Name IS NOT NULL THEN lp.Name -- SRM LUN Parent
+    WHEN dp.Name IS NOT NULL THEN dp.Name -- Database Instance Parent
  END AS [Parent]
 ,Replace(Replace(Replace(d.ChildEntityType,'Orion.',''),'SEUM.','WPM '),'s','') AS [Child Type] 
-,CASE WHEN nc.Caption IS NOT NULL THEN nc.Caption
-    WHEN ac.Name IS NOT NULL THEN ac.Name --Application Parent
-    WHEN gc.Name IS NOT NULL THEN gc.Name --Group Parent
-    WHEN tc.Name IS NOT NULL THEN tc.Name --Transaction Parent
-    WHEN ic.FullName IS NOT NULL THEN ic.FullName --Interface Parent
+,CASE 
+    WHEN nc.Caption IS NOT NULL THEN nc.Caption --Node Child
+    WHEN gc.Name IS NOT NULL THEN gc.Name --Group Child
+    WHEN ic.FullName IS NOT NULL THEN ic.FullName --Interface Child
+    WHEN ac.Name IS NOT NULL THEN ac.Name --Application Child
     WHEN iisc.Name IS NOT NULL THEN iisc.Name --AppInsight: IIS App Child
     WHEN iisac.Name IS NOT NULL THEN iisac.Name --AppInsight: IIS App Pool Child
     WHEN iissc.Name IS NOT NULL THEN iissc.Name --AppInsight: IIS Site Child
     WHEN sqlc.Name IS NOT NULL THEN sqlc.Name --AppInsight: Database Child
     WHEN sqlac.Name IS NOT NULL THEN sqlac.Name -- AppInsight: SQL Applcation Child
+    WHEN tc.Name IS NOT NULL THEN tc.Name --WPM Transaction Child
     WHEN tsc.DisplayName IS NOT NULL THEN tsc.DisplayName --WPM Step Child
     WHEN wpmac.Name IS NOT NULL THEN wpmac.Name -- WPM Location Child
+    WHEN lc.Name IS NOT NULL THEN lc.Name -- SRM LUN Parent
+    WHEN dc.Name IS NOT NULL THEN dc.Name -- Database Instance Child
  END AS [Child]
 
 FROM Orion.Dependencies d
-LEFT JOIN Orion.nodes np ON np.Uri=d.ParentUri --Nodes
-LEFT JOIN Orion.nodes nc ON nc.Uri=d.ChildUri --Nodes
-LEFT JOIN Orion.apm.Application ap ON ap.Uri=d.ParentUri --Applications
-LEFT JOIN Orion.apm.Application ac ON ac.Uri=d.ChildUri --Applications
-LEFT JOIN Orion.Groups gp ON gp.Uri=d.ParentUri --Groups
-LEFT JOIN Orion.Groups gc ON gc.Uri=d.ChildUri --Groups
-LEFT JOIN Orion.seum.Transactions tp ON tp.Uri=d.ParentUri --WPM Transactions
-LEFT JOIN Orion.seum.Transactions tc ON tc.Uri=d.ChildUri --WPM Transactions
-LEFT JOIN Orion.npm.Interfaces ip ON ip.Uri=d.ParentUri --Interfaces
-LEFT JOIN Orion.npm.Interfaces ic ON ic.Uri=d.ChildUri --Interfaces
-LEFT JOIN Orion.APM.IIS.Application iisp ON iisp.Uri=d.ParentUri --AppInsight: IIS App
-LEFT JOIN Orion.APM.IIS.Application iisc ON iisc.Uri=d.ChildUri --AppInsight: IIS App
-LEFT JOIN Orion.APM.IIS.ApplicationPool iisap ON iisap.Uri=d.ParentUri --AppInsight: IIS App Pool
-LEFT JOIN Orion.APM.IIS.ApplicationPool iisac ON iisac.Uri=d.ChildUri --AppInsight: IIS App Pool
-LEFT JOIN Orion.APM.IIS.Site iissp ON iissp.Uri=d.ParentUri --AppInsight: IIS Site
-LEFT JOIN Orion.APM.IIS.Site iissc ON iissc.Uri=d.ChildUri --AppInsight: IIS Site
-LEFT JOIN Orion.APM.SqlDatabase sqlp ON sqlp.Uri=d.ParentUri --AppInsight: Database
-LEFT JOIN Orion.APM.SqlDatabase sqlc ON sqlp.Uri=d.ChildUri --AppInsight: Database
+LEFT JOIN Orion.nodes np ON np.Uri = d.ParentUri --Nodes
+LEFT JOIN Orion.nodes nc ON nc.Uri = d.ChildUri --Nodes
+LEFT JOIN Orion.Groups gp ON gp.Uri = d.ParentUri --Groups
+LEFT JOIN Orion.Groups gc ON gc.Uri = d.ChildUri --Groups
+LEFT JOIN Orion.npm.Interfaces ip ON ip.Uri = d.ParentUri --Interfaces
+LEFT JOIN Orion.npm.Interfaces ic ON ic.Uri = d.ChildUri --Interfaces
+LEFT JOIN Orion.apm.Application ap ON ap.Uri = d.ParentUri --Applications
+LEFT JOIN Orion.apm.Application ac ON ac.Uri = d.ChildUri --Applications
+LEFT JOIN Orion.APM.IIS.Application iisp ON iisp.Uri = d.ParentUri --AppInsight: IIS App
+LEFT JOIN Orion.APM.IIS.Application iisc ON iisc.Uri = d.ChildUri --AppInsight: IIS App
+LEFT JOIN Orion.APM.IIS.ApplicationPool iisap ON iisap.Uri = d.ParentUri --AppInsight: IIS App Pool
+LEFT JOIN Orion.APM.IIS.ApplicationPool iisac ON iisac.Uri = d.ChildUri --AppInsight: IIS App Pool
+LEFT JOIN Orion.APM.IIS.Site iissp ON iissp.Uri = d.ParentUri --AppInsight: IIS Site
+LEFT JOIN Orion.APM.IIS.Site iissc ON iissc.Uri = d.ChildUri --AppInsight: IIS Site
+LEFT JOIN Orion.APM.SqlDatabase sqlp ON sqlp.Uri = d.ParentUri --AppInsight: Database
+LEFT JOIN Orion.APM.SqlDatabase sqlc ON sqlp.Uri = d.ChildUri --AppInsight: Database
 LEFT JOIN Orion.APM.SqlServerApplication sqlap ON sqlap.Uri = d.ParentUri --AppInsight: SQL Application
 LEFT JOIN Orion.APM.SqlServerApplication sqlac ON sqlac.Uri = d.ChildUri --AppInsight: SQL Application
+LEFT JOIN Orion.seum.Transactions tp ON tp.Uri = d.ParentUri --WPM Transactions
+LEFT JOIN Orion.seum.Transactions tc ON tc.Uri = d.ChildUri --WPM Transactions
 LEFT JOIN Orion.SEUM.TransactionSteps tsp ON tsp.Uri = d.ParentUri --WPM Steps
 LEFT JOIN Orion.SEUM.TransactionSteps tsc ON tsc.Uri = d.ChildUri --WPM Steps
 LEFT JOIN Orion.SEUM.Agents wpmap ON wpmap.Uri = d.ParentUri --WPM Location (Agents)
 LEFT JOIN Orion.SEUM.Agents wpmac ON wpmac.Uri = d.ChildUri --WPM Location (Agents)
+LEFT JOIN Orion.SRM.LUNs lp ON lp.Uri = d.ParentUri --SRM Lun
+LEFT JOIN Orion.SRM.LUNs lc ON lc.Uri = d.ChildUri --SRM Lun
+LEFT JOIN Orion.DPA.DatabaseInstance dp ON dp.Uri = d.ParentUri --Database Instance
+LEFT JOIN Orion.DPA.DatabaseInstance dc ON dc.Uri = d.ChildUri --Database Instance
 
 ORDER BY d.Name
-
-
---to do
---Database Instances
---LUNs

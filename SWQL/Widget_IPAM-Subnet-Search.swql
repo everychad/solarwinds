@@ -21,7 +21,7 @@
 -- Custom SWQL Query
 SELECT DISTINCT
   FriendlyName
-,CASE
+, CASE
     WHEN StatusName = 'Up' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.up.gif'
     WHEN StatusName = 'Warning' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.Warning.gif'
     WHEN StatusName = 'Critical' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.Critical.gif'
@@ -46,7 +46,7 @@ ORDER BY Address ASC
 --Custom SWQL Queary Search Box
 SELECT DISTINCT
   FriendlyName
-,CASE
+, CASE
     WHEN StatusName = 'Up' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.up.gif'
     WHEN StatusName = 'Warning' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.Warning.gif'
     WHEN StatusName = 'Critical' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.Critical.gif'

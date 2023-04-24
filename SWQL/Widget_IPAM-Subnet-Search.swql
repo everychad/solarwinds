@@ -1,0 +1,57 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+-- URL: https://thwack.solarwinds.com/product-forums/ip-address-manager-ipam/f/forum/7557/ipam-search---subnet-custom-properties
+
+-- Description: I need to ability to search through custom properties in IPAM. 
+--  The current search feature does not allow it. I added a Custom Query widget 
+--  to the IPAM Summary page and built a SWQL query to accomplish what i needed.
+
+-- Directions: See URL
+
+
+-- Custom SWQL Query
+SELECT DISTINCT
+  FriendlyName
+,CASE
+    WHEN StatusName = 'Up' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.up.gif'
+    WHEN StatusName = 'Warning' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.Warning.gif'
+    WHEN StatusName = 'Critical' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.Critical.gif'
+    ELSE '/Orion/IPAM/res/images/sw/icon.Subnet.ok.gif'
+    END AS [_IconFor_FriendlyName]
+, '/Orion/IPAM/Subnets.aspx?opento=' + ToString(GroupId) AS [_LinkFor_FriendlyName]
+, Address
+, CIDR
+, Comments
+, Location
+, i.CustomProperties.IP_Subnet_Custom_Field AS [SiteName]
+FROM IPAM.GroupNode i
+WHERE (GroupTypeText LIKE 'Subnet' OR GroupTypeText LIKE 'Supernet')
+ORDER BY Address ASC
+
+--Custom SWQL Queary Search Box
+SELECT DISTINCT
+  FriendlyName
+,CASE
+    WHEN StatusName = 'Up' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.up.gif'
+    WHEN StatusName = 'Warning' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.Warning.gif'
+    WHEN StatusName = 'Critical' THEN '/Orion/IPAM/res/images/sw/icon.Subnet.Critical.gif'
+    ELSE '/Orion/IPAM/res/images/sw/icon.Subnet.ok.gif'
+    END AS [_IconFor_FriendlyName]
+, '/Orion/IPAM/Subnets.aspx?opento=' + ToString(GroupId) AS [_LinkFor_FriendlyName]
+, Address
+, CIDR
+, Comments
+, Location
+, i.CustomProperties.IP_Subnet_Custom_Field AS [SiteName]
+FROM IPAM.GroupNode i
+WHERE (GroupTypeText LIKE 'Subnet' OR GroupTypeText LIKE 'Supernet') AND ( i.CustomProperties.IP_Subnet_Custom_Field LIKE '%${SEARCH_STRING}%' OR FriendlyName LIKE '%${SEARCH_STRING}%' OR Address LIKE '%${SEARCH_STRING}%' OR Comments LIKE '%${SEARCH_STRING}%' OR Location LIKE '%${SEARCH_STRING}%')
+ORDER BY Address ASC

@@ -37,10 +37,11 @@ SELECT DISTINCT
 -- e.g. i.CustomProperties.<custom property name> AS [Some Name]
 , i.CustomProperties.IP_Subnet_Custom_Field AS [SiteName]
 -----------------------------------------------------------------
-
 FROM IPAM.GroupNode i
 WHERE (GroupTypeText LIKE 'Subnet' OR GroupTypeText LIKE 'Supernet')
 ORDER BY Address ASC
+
+
 
 --Custom SWQL Queary Search Box
 SELECT DISTINCT

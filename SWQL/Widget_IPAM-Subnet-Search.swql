@@ -61,7 +61,7 @@ SELECT DISTINCT
 FROM IPAM.GroupNode i
 WHERE (GroupTypeText LIKE 'Subnet' OR GroupTypeText LIKE 'Supernet') 
  -------------------------------------------------------------------------
- ---- UPDATE THE BELOW LINE TO THE NAME OF YOUR IPAM CUSTOM PROPERTY
+ -- UPDATE THE BELOW LINE TO THE NAME OF YOUR IPAM CUSTOM PROPERTY
  -- e.g. AND ( i.CustomProperties.<custom property name> LIKE '%${SEARCH_STRING}%'
  AND ( i.CustomProperties.IP_Subnet_Custom_Field LIKE '%${SEARCH_STRING}%' 
  -------------------------------------------------------------------------

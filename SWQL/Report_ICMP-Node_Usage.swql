@@ -1,0 +1,34 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+-- URL: N/A
+-- Description: This query shows the breakdown of ICMP nodes and what platform features
+--  are being leveraged by them.
+
+SELECT
+  t1.Total as [Total ICMP Nodes]
+, t2.StatusO as [ICMP Status Only Nodes]
+, t1.API as [ICMP API Nodes]
+, t2.SDWan as [ICMP SDWan Nodes]
+, t1.VMan as [ICMP VMan Nodes]
+, t2.SAM as [ICMP SAM Nodes]
+FROM(SELECT
+     count(DISTINCT OriN.NodeID) as [Total]
+   , sum(case when OriN.ObjectSubType='ICMP' AND OriN.ApiPollers.ID IS NOT NULL THEN 1 ELSE 0 end) as API
+   , sum(case when OriN.ObjectSubType='ICMP' AND (OriN.Host.HostID IS NOT NULL OR OriN.VCenter.VCenterID IS NOT NULL) THEN 1 ELSE 0 end) as VMan
+from Orion.Nodes OriN WHERE OriN.ObjectSubType='ICMP') as t1
+
+join (SELECT
+      count(DISTINCT OriN.NodeID) as Total
+    , sum(case when OriN.ApiPollers.ID IS NULL AND OOI.NodeId IS NULL AND OriN.Host.HostID IS NULL AND OriN.VCenter.VCenterID IS NULL AND OriN.Applications.NodeID IS NULL then 1 else 0 end) as StatusO
+    , sum(case when OOI.NodeID IS NOT NULL then 1 else 0 end) as SDWan
+    , count(distinct OriN.Applications.nodeid) as SAM
+    from Orion.Nodes OriN left join Orion.Orchestrators.Info OOI on OriN.NodeId=OOI.NodeID WHERE OriN.Objectsubtype='ICMP') as t2 on t1.Total=t2.Total

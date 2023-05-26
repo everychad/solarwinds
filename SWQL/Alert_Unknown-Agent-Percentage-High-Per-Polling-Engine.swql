@@ -1,0 +1,39 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+-- URL:
+-- Description: This is an alert when a certain percentage of agents go into an 
+--   unknown state per polling engine
+
+SELECT 
+  PoolMembers.Uri
+, PoolMembers.DisplayName
+--,UnknownAgents.UnknownAgentCount
+--,TotalAgents.TotalAgentCount
+--, ((UnknownAgents.UnknownAgentCount + 0.00) / TotalAgents.TotalAgentCount) AS AgentUnknownPercentage
+FROM Orion.HA.PoolMembers AS PoolMembers
+JOIN (SELECT 
+        pm1.PoolId
+       ,COUNT(pm1.Engine.Agents.AgentStatusMessage) AS UnknownAgentCount 
+      FROM Orion.HA.PoolMembers pm1 
+      WHERE pm1.Engine.Agents.AgentStatusMessage = 'Unknown' 
+      GROUP BY pm1.PoolId) AS UnknownAgents 
+  ON UnknownAgents.PoolId = PoolMembers.PoolId
+JOIN (SELECT 
+        pm2.PoolId
+       ,COUNT(pm2.Engine.Agents.PollingEngineId) AS TotalAgentCount 
+      FROM Orion.HA.PoolMembers pm2 
+      GROUP BY pm2.PoolId) AS TotalAgents 
+  ON TotalAgents.PoolId = PoolMembers.PoolId
+WHERE PoolMembers.PoolMemberType NOT LIKE '%standby%'
+    --AND PoolMembers.PoolId != 1
+GROUP BY PoolMembers.DisplayName, PoolMembers.Uri, TotalAgents.TotalAgentCount,UnknownAgents.UnknownAgentCount
+HAVING ((UnknownAgents.UnknownAgentCount + 0.00) / TotalAgents.TotalAgentCount) > 0.3

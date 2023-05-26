@@ -18,15 +18,15 @@ SELECT
 , PoolMembers.DisplayName
 ,UnknownAgents.UnknownAgentCount
 ,TotalAgents.TotalAgentCount
-, ((UnknownAgents.UnknownAgentCount + 0.00) / TotalAgents.TotalAgentCount) AS AgentUnknownPercentage
+,ROUND ((((UnknownAgents.UnknownAgentCount + 0.00) / TotalAgents.TotalAgentCount)*100),2) AS AgentUnknownPercentage
 ,Time.LastFailoverTime
-,HOURDIFF(Time.LastFailoverTime, GETUTCDATE()) AS TimeDiff
+,MINUTEDIFF(Time.LastFailoverTime, GETUTCDATE()) AS TimeDiffMinute
 FROM Orion.HA.PoolMembers AS PoolMembers
-
+--Custom SWQL Alert below this part
 --Join table with count of agents in unknown state
 JOIN (SELECT 
         pm1.PoolId
-       ,COUNT(pm1.Engine.Agents.AgentStatusMessage) AS UnknownAgentCount 
+       ,COUNT(pm1.Engine.Agents.AgentStatusMessage) AS UnknownAgentCount
       FROM Orion.HA.PoolMembers pm1 
       WHERE pm1.Engine.Agents.AgentStatusMessage = 'Unknown' 
       GROUP BY pm1.PoolId
@@ -58,8 +58,10 @@ GROUP BY
     ,Time.LastFailoverTime
 HAVING 
     --Percentage of Agents in Unknown status compared to total agents on APE
-    ((UnknownAgents.UnknownAgentCount + 0.00) / TotalAgents.TotalAgentCount) > 0.5
+    ROUND((((UnknownAgents.UnknownAgentCount + 0.00) / TotalAgents.TotalAgentCount)*100),2) >= 80
+    
     --Minimum count of agents per APE
-    AND TotalAgents.TotalAgentCount > 5
+    AND TotalAgents.TotalAgentCount >= 100
+    
     --Amount of time that must pass after failover event before the alert could trigger again
-    AND (HOURDIFF(Time.LastFailoverTime, GETUTCDATE())) >= 1
+    AND (MINUTEDIFF(Time.LastFailoverTime, GETUTCDATE())) >= 720

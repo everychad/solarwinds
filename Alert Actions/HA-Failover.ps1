@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-  This script will check the status of all agents in the SolarWinds Platform and count how many are in an Unknown state.
+  This script is used for SolarWinds HA Failover.
 .DESCRIPTION
-  We needed to monitor and alert against the count of agent status, specifically a status of unknown. This script calls into
-  the SolarWinds Platform API via SWIS and queries for the information.
+  We have a unique scenario that we had to account for on our SolarWinds HA setup. This simple script allows for a PowerShell 
+  script to be run to force a HA failover.
 .PARAMETER None
   <none>
 .INPUTS

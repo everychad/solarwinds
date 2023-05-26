@@ -37,3 +37,4 @@ WHERE PoolMembers.PoolMemberType NOT LIKE '%standby%'
     --AND PoolMembers.PoolId != 1
 GROUP BY PoolMembers.DisplayName, PoolMembers.Uri, TotalAgents.TotalAgentCount,UnknownAgents.UnknownAgentCount
 HAVING ((UnknownAgents.UnknownAgentCount + 0.00) / TotalAgents.TotalAgentCount) > 0.3
+  AND TotalAgents.TotalAgentCount > 7

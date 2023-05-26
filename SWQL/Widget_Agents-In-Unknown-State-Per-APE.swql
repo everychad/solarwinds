@@ -1,0 +1,35 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+-- URL: N/A
+-- Description: This can be a widget or report that shows node availability. You can
+--  uncomment the different date options to your liking. There is also an example if
+--  you wanted to reference a Custom Property.
+--  
+-- Directions:
+-- 1. On a dashboard, add a widget called ‘Custom Query’
+-- 2. Edit that dashboard page and paste the query into the query box.
+-- 3. Update the Title of the Widget
+-- 4. Click submit.
+
+SELECT 
+  Agent.Engine.DisplayName
+ ,UnknownAgents.UnknownAgents
+ ,COUNT(Agent.AgentId) AS [TotalAgentsPerEngine]
+ ,ROUND((((UnknownAgents.UnknownAgents +0.00) / (COUNT(Agent.AgentId)))*100),2) AS PercentageOfUnknownAgents
+FROM Orion.AgentManagement.Agent Agent
+JOIN (SELECT PollingEngineId
+    ,COUNT(AgentStatusMessage) AS UnknownAgents
+    FROM Orion.AgentManagement.Agent
+    WHERE AgentStatusMessage = 'Unknown' 
+    GROUP BY PollingEngineId) UnknownAgents ON UnknownAgents.PollingEngineId = Agent.PollingEngineId
+GROUP BY Agent.Engine.DisplayName, UnknownAgents.UnknownAgents
+ORDER BY PercentageOfUnknownAgents DESC

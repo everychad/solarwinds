@@ -20,31 +20,34 @@ SELECT
 ,TotalAgents.TotalAgentCount
 , ((UnknownAgents.UnknownAgentCount + 0.00) / TotalAgents.TotalAgentCount) AS AgentUnknownPercentage
 ,Time.LastFailoverTime
-,MINUTEDIFF(Time.LastFailoverTime, GETUTCDATE()) AS TimeDiff
+,HOURDIFF(Time.LastFailoverTime, GETUTCDATE()) AS TimeDiff
 FROM Orion.HA.PoolMembers AS PoolMembers
+
+--Join table with count of agents in unknown state
 JOIN (SELECT 
         pm1.PoolId
        ,COUNT(pm1.Engine.Agents.AgentStatusMessage) AS UnknownAgentCount 
       FROM Orion.HA.PoolMembers pm1 
       WHERE pm1.Engine.Agents.AgentStatusMessage = 'Unknown' 
       GROUP BY pm1.PoolId
-  ) AS UnknownAgents 
-  ON UnknownAgents.PoolId = PoolMembers.PoolId
+  ) AS UnknownAgents ON UnknownAgents.PoolId = PoolMembers.PoolId
+
+--Join table with count of all agents per engine
 JOIN (SELECT 
         pm2.PoolId
        ,COUNT(pm2.Engine.Agents.PollingEngineId) AS TotalAgentCount 
       FROM Orion.HA.PoolMembers pm2 
       GROUP BY pm2.PoolId
-  ) AS TotalAgents 
-  ON TotalAgents.PoolId = PoolMembers.PoolId
+  ) AS TotalAgents ON TotalAgents.PoolId = PoolMembers.PoolId
+
+--Join table to retrieve last timestamp of failover
 JOIN (SELECT 
         MAX(e.EventTime) AS LastFailoverTime
        ,e.Engine.PoolMember.PoolId
       FROM Orion.Events e
       WHERE eventType=6500 
       GROUP BY e.Engine.PoolMember.PoolId
-  ) AS Time
-  ON Time.PoolId = PoolMembers.PoolId
+  ) AS Time ON Time.PoolId = PoolMembers.PoolId
 WHERE PoolMembers.PoolMemberType NOT LIKE '%standby%'
     --AND PoolMembers.PoolId = 1
 GROUP BY 
@@ -53,6 +56,10 @@ GROUP BY
     ,TotalAgents.TotalAgentCount
     ,UnknownAgents.UnknownAgentCount
     ,Time.LastFailoverTime
-HAVING ((UnknownAgents.UnknownAgentCount + 0.00) / TotalAgents.TotalAgentCount) > 0.5
+HAVING 
+    --Percentage of Agents in Unknown status compared to total agents on APE
+    ((UnknownAgents.UnknownAgentCount + 0.00) / TotalAgents.TotalAgentCount) > 0.5
+    --Minimum count of agents per APE
     AND TotalAgents.TotalAgentCount > 5
-    AND (MINUTEDIFF(Time.LastFailoverTime, GETUTCDATE())) > 45
+    --Amount of time that must pass after failover event before the alert could trigger again
+    AND (HOURDIFF(Time.LastFailoverTime, GETUTCDATE())) >= 1

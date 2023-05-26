@@ -57,13 +57,11 @@ function GetModule {
 #Import Powershell Modules
 GetModule "SwisPowershell"
 
-#Orion deployment connection Variables
-#$OrionHostname = Read-Host "Enter your Orion Hostname or IP Address: "
-$OrionHostname = 'lab.corvega.int'
-#$OrionCreds = Get-Credential -Message "Please enter your Orion Web Console Username and Password"
+#SolarWinds deployment connection Variables
+$SolarWindsMainServer = 'localhost'
 
 #Build SW Information Service connection
-$swis = Connect-Swis -Hostname $OrionHostname -UserName 'apiautomation' -Password 'ApAu001!'
+$swis = Connect-Swis -Hostname $SolarWindsMainServer -Certificate
 
 #Query Orion Nodes table
 $NodeData = Get-SwisData `

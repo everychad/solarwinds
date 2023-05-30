@@ -49,7 +49,8 @@ JOIN (SELECT
       GROUP BY e.Engine.PoolMember.PoolId
   ) AS Time ON Time.PoolId = PoolMembers.PoolId
 WHERE PoolMembers.PoolMemberType NOT LIKE '%standby%'
-    --AND PoolMembers.PoolId = 1
+    --AND Time.LastFailoverTime IS NOT NULL
+    --AND PoolMembers.PoolId = 1 --Used for testing purposes
 GROUP BY 
      PoolMembers.DisplayName
     ,PoolMembers.Uri

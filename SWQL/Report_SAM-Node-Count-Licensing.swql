@@ -20,8 +20,8 @@ SELECT
   COUNT(DISTINCT NodeID) AS [SAM Nodes]
  FROM Orion.Nodes n
  WHERE (n.Applications.ApplicationTemplateID IS NOT NULL 
-  OR n.ApiPollers.ID IS NOT NULL)) AS [SAM Node License Count] 
-,COUNT(DISTINCT a.NodeID) AS [Nodes with Templates]
+  OR n.ApiPollers.ID IS NOT NULL)) AS [Total Application Node License Count] 
+,COUNT(DISTINCT a.NodeID) AS [Nodes with Application Templates]
 ,(SELECT 
     COUNT(DISTINCT a.Node.NodeID) AS [API Poller]
  FROM Orion.APIPoller.ApiPoller a) AS [Nodes with API Pollers]

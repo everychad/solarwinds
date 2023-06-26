@@ -25,8 +25,7 @@ SELECT
         ELSE 1 END) AS [ICMP Status Only Nodes]
 
     --Custom FROM to filter on ALL ICMP Nodes
-    FROM (SELECT NodeID FROM Orion.Nodes Nodes WHERE Nodes.ObjectSubType = 'ICMP'
-    ) Nodes
+    FROM (SELECT NodeID FROM Orion.Nodes Nodes WHERE Nodes.ObjectSubType = 'ICMP') Nodes
 
     --Join all nodes with API Pollers
     LEFT JOIN (SELECT DISTINCT(API.Node.NodeID) FROM Orion.APIPoller.ApiPoller API

@@ -13,22 +13,54 @@
 -- Description: This query shows the breakdown of ICMP nodes and what platform features
 --  are being leveraged by them.
 
-SELECT
-  t1.Total as [Total ICMP Nodes]
-, t2.StatusO as [ICMP Status Only Nodes]
-, t1.API as [ICMP API Nodes]
-, t2.SDWan as [ICMP SDWan Nodes]
-, t1.VMan as [ICMP VMan Nodes]
-, t2.SAM as [ICMP SAM Nodes]
-FROM(SELECT
-     count(DISTINCT OriN.NodeID) as [Total]
-   , sum(case when OriN.ObjectSubType='ICMP' AND OriN.ApiPollers.ID IS NOT NULL THEN 1 ELSE 0 end) as API
-   , sum(case when OriN.ObjectSubType='ICMP' AND (OriN.Host.HostID IS NOT NULL OR OriN.VCenter.VCenterID IS NOT NULL) THEN 1 ELSE 0 end) as VMan
-from Orion.Nodes OriN WHERE OriN.ObjectSubType='ICMP') as t1
+SELECT 
+  COUNT(DISTINCT NodeID) AS [Total Nodes]
+  ,(SELECT
+        SUM(CASE
+            WHEN APP.NodeID IS NOT NULL THEN 0
+            WHEN API.NodeID IS NOT NULL THEN 0
+            WHEN NCM.NodeID IS NOT NULL THEN 0
+            WHEN VCENTER.NodeID IS NOT NULL THEN 0
+            WHEN HOSTS.NodeID IS NOT NULL THEN 0
+            ELSE 1
+        END) AS [ICMP Status Only Nodes]
 
-join (SELECT
-      count(DISTINCT OriN.NodeID) as Total
-    , sum(case when OriN.ApiPollers.ID IS NULL AND OOI.NodeId IS NULL AND OriN.Host.HostID IS NULL AND OriN.VCenter.VCenterID IS NULL AND OriN.Applications.NodeID IS NULL then 1 else 0 end) as StatusO
-    , sum(case when OOI.NodeID IS NOT NULL then 1 else 0 end) as SDWan
-    , count(distinct OriN.Applications.nodeid) as SAM
-    from Orion.Nodes OriN left join Orion.Orchestrators.Info OOI on OriN.NodeId=OOI.NodeID WHERE OriN.Objectsubtype='ICMP') as t2 on t1.Total=t2.Total
+        --Custom FROM to filter on ALL ICMP Nodes
+        FROM (
+            SELECT NodeID 
+            FROM Orion.Nodes Nodes 
+            WHERE Nodes.ObjectSubType = 'ICMP'
+        ) Nodes
+
+        --Join all nodes with API Pollers
+        LEFT JOIN (
+            SELECT DISTINCT(API.Node.NodeID) 
+            FROM Orion.APIPoller.ApiPoller API
+        ) API ON API.NodeID = Nodes.NodeID
+
+        --Join all nodes with Application Templates
+        LEFT JOIN (
+            SELECT DISTINCT(APP.NodeID) 
+            FROM Orion.APM.Application APP
+        ) APP ON APP.NodeID = Nodes.NodeID
+
+        --Join all nodes with Network Configuration
+        LEFT JOIN (
+            SELECT DISTINCT(NCM.NodeID) 
+            FROM Cirrus.NCMNodeLicenseStatus NCM 
+            WHERE NCM.LicensedByNCM = 'Yes'
+        ) NCM ON NCM.NodeID = Nodes.NodeID
+
+        --Join all nodes that are vCenter servers
+        LEFT JOIN (
+            SELECT VCENTER.NodeID 
+            FROM Orion.VIM.VCenters VCENTER
+        ) VCENTER ON VCENTER.NodeID = Nodes.NodeID
+
+        --Join all nodes that are virtual hosts
+        LEFT JOIN (
+            SELECT HOSTS.NodeID 
+            FROM Orion.VIM.Hosts HOSTS
+        ) HOSTS ON HOSTS.NodeID = Nodes.NodeID 
+    ) AS [ICMP Status Only Nodes]
+FROM Orion.Nodes

@@ -15,52 +15,37 @@
 
 SELECT 
   COUNT(DISTINCT NodeID) AS [Total Nodes]
-  ,(SELECT
-        SUM(CASE
-            WHEN APP.NodeID IS NOT NULL THEN 0
-            WHEN API.NodeID IS NOT NULL THEN 0
-            WHEN NCM.NodeID IS NOT NULL THEN 0
-            WHEN VCENTER.NodeID IS NOT NULL THEN 0
-            WHEN HOSTS.NodeID IS NOT NULL THEN 0
-            ELSE 1
-        END) AS [ICMP Status Only Nodes]
+ ,(SELECT
+     SUM(CASE
+        WHEN APP.NodeID IS NOT NULL THEN 0
+        WHEN API.NodeID IS NOT NULL THEN 0
+        WHEN NCM.NodeID IS NOT NULL THEN 0
+        WHEN VCENTER.NodeID IS NOT NULL THEN 0
+        WHEN HOSTS.NodeID IS NOT NULL THEN 0
+        ELSE 1 END) AS [ICMP Status Only Nodes]
 
-        --Custom FROM to filter on ALL ICMP Nodes
-        FROM (
-            SELECT NodeID 
-            FROM Orion.Nodes Nodes 
-            WHERE Nodes.ObjectSubType = 'ICMP'
-        ) Nodes
+    --Custom FROM to filter on ALL ICMP Nodes
+    FROM (SELECT NodeID FROM Orion.Nodes Nodes WHERE Nodes.ObjectSubType = 'ICMP'
+    ) Nodes
 
-        --Join all nodes with API Pollers
-        LEFT JOIN (
-            SELECT DISTINCT(API.Node.NodeID) 
-            FROM Orion.APIPoller.ApiPoller API
-        ) API ON API.NodeID = Nodes.NodeID
+    --Join all nodes with API Pollers
+    LEFT JOIN (SELECT DISTINCT(API.Node.NodeID) FROM Orion.APIPoller.ApiPoller API
+    ) API ON API.NodeID = Nodes.NodeID
 
-        --Join all nodes with Application Templates
-        LEFT JOIN (
-            SELECT DISTINCT(APP.NodeID) 
-            FROM Orion.APM.Application APP
-        ) APP ON APP.NodeID = Nodes.NodeID
+    --Join all nodes with Application Templates
+    LEFT JOIN (SELECT DISTINCT(APP.NodeID) FROM Orion.APM.Application APP
+    ) APP ON APP.NodeID = Nodes.NodeID
 
-        --Join all nodes with Network Configuration
-        LEFT JOIN (
-            SELECT DISTINCT(NCM.NodeID) 
-            FROM Cirrus.NCMNodeLicenseStatus NCM 
-            WHERE NCM.LicensedByNCM = 'Yes'
-        ) NCM ON NCM.NodeID = Nodes.NodeID
+    --Join all nodes with Network Configuration
+    LEFT JOIN (SELECT DISTINCT(NCM.NodeID) FROM Cirrus.NCMNodeLicenseStatus NCM WHERE NCM.LicensedByNCM = 'Yes'
+    ) NCM ON NCM.NodeID = Nodes.NodeID
 
-        --Join all nodes that are vCenter servers
-        LEFT JOIN (
-            SELECT VCENTER.NodeID 
-            FROM Orion.VIM.VCenters VCENTER
-        ) VCENTER ON VCENTER.NodeID = Nodes.NodeID
+    --Join all nodes that are vCenter servers
+    LEFT JOIN (SELECT VCENTER.NodeID FROM Orion.VIM.VCenters VCENTER
+    ) VCENTER ON VCENTER.NodeID = Nodes.NodeID
 
-        --Join all nodes that are virtual hosts
-        LEFT JOIN (
-            SELECT HOSTS.NodeID 
-            FROM Orion.VIM.Hosts HOSTS
-        ) HOSTS ON HOSTS.NodeID = Nodes.NodeID 
-    ) AS [ICMP Status Only Nodes]
+    --Join all nodes that are virtual hosts
+    LEFT JOIN (SELECT HOSTS.NodeID FROM Orion.VIM.Hosts HOSTS) HOSTS ON HOSTS.NodeID = Nodes.NodeID 
+
+  ) AS [ICMP Status Only Nodes]
 FROM Orion.Nodes

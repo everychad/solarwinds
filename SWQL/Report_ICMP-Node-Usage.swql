@@ -29,15 +29,15 @@ SELECT
     FROM (SELECT NodeID FROM Orion.Nodes Nodes WHERE Nodes.ObjectSubType = 'ICMP') Nodes
 
     --Join all nodes with API Pollers
-    LEFT JOIN (SELECT (API.Node.NodeID) FROM Orion.APIPoller.ApiPoller API
+    LEFT JOIN (SELECT API.Node.NodeID FROM Orion.APIPoller.ApiPoller API
     ) API ON API.NodeID = Nodes.NodeID
 
     --Join all nodes with Application Templates
-    LEFT JOIN (SELECT (APP.NodeID) FROM Orion.APM.Application APP
+    LEFT JOIN (SELECT APP.NodeID FROM Orion.APM.Application APP
     ) APP ON APP.NodeID = Nodes.NodeID
 
     --Join all nodes with Network Configuration
-    LEFT JOIN (SELECT (NCM.NodeID) FROM Cirrus.NCMNodeLicenseStatus NCM WHERE NCM.LicensedByNCM = 'Yes'
+    LEFT JOIN (SELECT NCM.NodeID FROM Cirrus.NCMNodeLicenseStatus NCM WHERE NCM.LicensedByNCM = 'Yes'
     ) NCM ON NCM.NodeID = Nodes.NodeID
 
     --Join all nodes that are vCenter servers

@@ -45,10 +45,12 @@ SELECT
     ) VCENTER ON VCENTER.NodeID = Nodes.NodeID
 
     --Join all nodes that are virtual hosts
-    LEFT JOIN (SELECT HOSTS.NodeID FROM Orion.VIM.Hosts HOSTS) HOSTS ON HOSTS.NodeID = Nodes.NodeID 
+    LEFT JOIN (SELECT HOSTS.NodeID FROM Orion.VIM.Hosts HOSTS
+    ) HOSTS ON HOSTS.NodeID = Nodes.NodeID 
 
     --Join all nodes that are SD-WAN Orchestrators
-    --LEFT JOIN (SELECT NodeID FROM Orion.Orchestrators.Info SDWAN) SDWAN ON SDWAN.NodeID = Nodes.NodeID 
+    --LEFT JOIN (SELECT NodeID FROM Orion.Orchestrators.Info SDWAN
+    --) SDWAN ON SDWAN.NodeID = Nodes.NodeID 
 
   ) AS [ICMP Status Only Nodes]
 FROM Orion.Nodes

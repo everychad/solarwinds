@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfApplicationTemplate xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.solarwinds.com/2007/08/APM">
+	<ApplicationTemplate>
+		<Settings xmlns:s="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+			<s:KeyValueOfstringSettingValueyR_SGpLPx>
+				<s:Key>__DebugLoggingEnabled</s:Key>
+				<s:Value>
+					<Required>true</Required>
+					<SettingLevel>Template</SettingLevel>
+					<Value>False</Value>
+					<ValueType>Boolean</ValueType>
+					<Key i:nil="true" />
+				</s:Value>
+			</s:KeyValueOfstringSettingValueyR_SGpLPx>
+			<s:KeyValueOfstringSettingValueyR_SGpLPx>
+				<s:Key>__NumberOfLogFilesToKeep</s:Key>
+				<s:Value>
+					<Required>true</Required>
+					<SettingLevel>Template</SettingLevel>
+					<Value>30</Value>
+					<ValueType>Integer</ValueType>
+					<Key i:nil="true" />
+				</s:Value>
+			</s:KeyValueOfstringSettingValueyR_SGpLPx>
+			<s:KeyValueOfstringSettingValueyR_SGpLPx>
+				<s:Key>__Timeout</s:Key>
+				<s:Value>
+					<Required>true</Required>
+					<SettingLevel>Template</SettingLevel>
+					<Value>300</Value>
+					<ValueType>Integer</ValueType>
+					<Key i:nil="true" />
+				</s:Value>
+			</s:KeyValueOfstringSettingValueyR_SGpLPx>
+			<s:KeyValueOfstringSettingValueyR_SGpLPx>
+				<s:Key>__Use64Bit</s:Key>
+				<s:Value>
+					<Required>true</Required>
+					<SettingLevel>Template</SettingLevel>
+					<Value>False</Value>
+					<ValueType>Boolean</ValueType>
+					<Key i:nil="true" />
+				</s:Value>
+			</s:KeyValueOfstringSettingValueyR_SGpLPx>
+		</Settings>
+		<ComponentTemplates>
+			<ComponentTemplate>
+				<ComponentOrder>1</ComponentOrder>
+				<Id>4705</Id>
+				<Name>PowerShell HTTPS Monitor</Name>
+				<Settings xmlns:s="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>__Disabled</s:Key>
+						<s:Value>
+							<Required>false</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value>False</Value>
+							<ValueType>Boolean</ValueType>
+							<Key>__Disabled</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>__CredentialSetId</s:Key>
+						<s:Value>
+							<Required>false</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value>0</Value>
+							<ValueType>String</ValueType>
+							<Key>__CredentialSetId</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>__UserDescription</s:Key>
+						<s:Value>
+							<Required>false</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value></Value>
+							<ValueType>String</ValueType>
+							<Key>__UserDescription</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>__UserNotes</s:Key>
+						<s:Value>
+							<Required>false</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value></Value>
+							<ValueType>String</ValueType>
+							<Key>__UserNotes</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>CountAsDifference</s:Key>
+						<s:Value>
+							<Required>false</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value>false</Value>
+							<ValueType>Boolean</ValueType>
+							<Key>CountAsDifference</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>ExecutionMode</s:Key>
+						<s:Value>
+							<Required>false</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value>LocalHost</Value>
+							<ValueType>Option</ValueType>
+							<Key>ExecutionMode</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>ImpersonateForLocalMode</s:Key>
+						<s:Value>
+							<Required>false</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value>false</Value>
+							<ValueType>Boolean</ValueType>
+							<Key>ImpersonateForLocalMode</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>ScriptArguments</s:Key>
+						<s:Value>
+							<Required>false</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value>client_identifier, aa0a000-00aa-000a-000a-0aa0a0aaaa00</Value>
+							<ValueType>String</ValueType>
+							<Key>ScriptArguments</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>ScriptBody</s:Key>
+						<s:Value>
+							<Required>true</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value>[CmdletBinding()]
+param( [String]$ClientIdentifier, [String]$OpsgeneAuthKey )
+
+try {
+    #Build headers
+    $headers = @{}
+    $headers.Add("Authorization", "GenieKey $OpsgeneAuthKey")
+
+    #Send web post
+    $request = Invoke-RestMethod -Uri "https://api.opsgenie.com/v2/heartbeats/$ClientIdentifier/ping" -Method Post -Headers $headers
+
+    #write results
+
+    if ($request.result -contains 'PONG - Heartbeat received') {
+        Write-Output "Statistic.ResponseTime: $($request.took)"
+        Write-Output "Message.ResponseTime: $($request.result)"
+    }
+    else {
+        Throw "PONG/Heartbeat not received. $($request.result)"
+    }
+
+    Exit 0
+}
+Catch {
+
+    Write-Output "Statistic.ResponseTime: -1"
+    Write-Output "Message.ResponseTime: $($_.Exception.Message)"
+
+    Exit 2
+}</Value>
+							<ValueType>External</ValueType>
+							<Key>ScriptBody</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>StatusRollupType</s:Key>
+						<s:Value>
+							<Required>true</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value>Worst</Value>
+							<ValueType>Option</ValueType>
+							<Key>StatusRollupType</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>WrmPort</s:Key>
+						<s:Value>
+							<Required>true</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value>5985</Value>
+							<ValueType>Integer</ValueType>
+							<Key>WrmPort</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>WrmUrlPrefix</s:Key>
+						<s:Value>
+							<Required>true</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value>wsman</Value>
+							<ValueType>String</ValueType>
+							<Key>WrmUrlPrefix</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+					<s:KeyValueOfstringSettingValueyR_SGpLPx>
+						<s:Key>WrmUseSSL</s:Key>
+						<s:Value>
+							<Required>false</Required>
+							<SettingLevel>Template</SettingLevel>
+							<Value>false</Value>
+							<ValueType>Boolean</ValueType>
+							<Key>WrmUseSSL</Key>
+						</s:Value>
+					</s:KeyValueOfstringSettingValueyR_SGpLPx>
+				</Settings>
+				<Type>PowerShell</Type>
+				<Thresholds />
+				<EvidenceType>None</EvidenceType>
+				<CategoryDisplayName></CategoryDisplayName>
+				<ComponentCategoryId i:nil="true" />
+				<DynamicColumnSettings>
+					<DynamicEvidenceColumnSchema>
+						<Cells />
+						<ComponentID>-1</ComponentID>
+						<ComponentTemplateID>4705</ComponentTemplateID>
+						<DataTransform />
+						<DataTransformOverridden>false</DataTransformOverridden>
+						<Disabled>false</Disabled>
+						<ID>2294</ID>
+						<Label>ResponseTime</Label>
+						<LabelOverridden>false</LabelOverridden>
+						<Name>ResponseTime</Name>
+						<ParentID>-1</ParentID>
+						<Threshold>
+							<AreHigherValuesBetter>false</AreHigherValuesBetter>
+							<BaselineApplyError></BaselineApplyError>
+							<ComputeBaseline>true</ComputeBaseline>
+							<CriticalFormula></CriticalFormula>
+							<CriticalLevel>1.7976931348623157E+308</CriticalLevel>
+							<CriticalPolls>1</CriticalPolls>
+							<CriticalPollsInterval>1</CriticalPollsInterval>
+							<IsForParentComponent>false</IsForParentComponent>
+							<IsForTemplate>false</IsForTemplate>
+							<MaxValue>100</MaxValue>
+							<Name></Name>
+							<WarnLevel>1.7976931348623157E+308</WarnLevel>
+							<WarningFormula></WarningFormula>
+							<WarningPolls>1</WarningPolls>
+							<WarningPollsInterval>1</WarningPollsInterval>
+							<ThresholdOperator>Greater</ThresholdOperator>
+						</Threshold>
+						<ThresholdOverridden>false</ThresholdOverridden>
+						<Type>String</Type>
+					</DynamicEvidenceColumnSchema>
+					<DynamicEvidenceColumnSchema>
+						<Cells />
+						<ComponentID>-1</ComponentID>
+						<ComponentTemplateID>4705</ComponentTemplateID>
+						<DataTransform>
+							<CommonFormulaOptions>0</CommonFormulaOptions>
+							<TransformExpression></TransformExpression>
+						</DataTransform>
+						<DataTransformOverridden>false</DataTransformOverridden>
+						<Disabled>false</Disabled>
+						<ID>2295</ID>
+						<Label>ResponseTime</Label>
+						<LabelOverridden>false</LabelOverridden>
+						<Name>ResponseTime</Name>
+						<ParentID>-1</ParentID>
+						<Threshold>
+							<AreHigherValuesBetter>false</AreHigherValuesBetter>
+							<BaselineApplyError></BaselineApplyError>
+							<ComputeBaseline>true</ComputeBaseline>
+							<CriticalFormula></CriticalFormula>
+							<CriticalLevel>1.7976931348623157E+308</CriticalLevel>
+							<CriticalPolls>1</CriticalPolls>
+							<CriticalPollsInterval>1</CriticalPollsInterval>
+							<IsForParentComponent>false</IsForParentComponent>
+							<IsForTemplate>false</IsForTemplate>
+							<MaxValue>100</MaxValue>
+							<Name></Name>
+							<WarnLevel>1.7976931348623157E+308</WarnLevel>
+							<WarningFormula></WarningFormula>
+							<WarningPolls>1</WarningPolls>
+							<WarningPollsInterval>1</WarningPollsInterval>
+							<ThresholdOperator>Greater</ThresholdOperator>
+						</Threshold>
+						<ThresholdOverridden>false</ThresholdOverridden>
+						<Type>Numeric</Type>
+					</DynamicEvidenceColumnSchema>
+				</DynamicColumnSettings>
+				<VisibilityMode>Visible</VisibilityMode>
+				<ShortName></ShortName>
+				<ApplicationItemType></ApplicationItemType>
+				<ApplicationTemplateId>323</ApplicationTemplateId>
+				<UniqueId>2debe6b3-bc97-44bd-b3c0-1419bca6b8d7</UniqueId>
+				<ComponentCategoryName i:nil="true" />
+				<IsApplicationItemSpecific>false</IsApplicationItemSpecific>
+			</ComponentTemplate>
+		</ComponentTemplates>
+		<DeletedComponentTemplates />
+		<Id>323</Id>
+		<Name>Opsgenie API HTTPS Monitor</Name>
+		<IsMockTemplate>false</IsMockTemplate>
+		<Description>This is originally shared on Thwack.com.
+URL: https://thwack.solarwinds.com/content-exchange/server-application-monitor/m/application-monitor-templates/227</Description>
+		<Tags />
+		<Created>2023-07-11T19:56:20.637Z</Created>
+		<LastModified>2023-07-11T19:58:14.663Z</LastModified>
+		<CustomApplicationType i:nil="true" />
+		<Version>1.0</Version>
+		<ViewID>0</ViewID>
+		<ViewXml i:nil="true" />
+		<ModuleVersion xmlns:d="http://schemas.datacontract.org/2004/07/System">
+			<d:_Build>0</d:_Build>
+			<d:_Major>2023</d:_Major>
+			<d:_Minor>2</d:_Minor>
+			<d:_Revision>0</d:_Revision>
+		</ModuleVersion>
+		<UniqueId>ce74fd6b-3e89-4758-970b-affb93f62cc6</UniqueId>
+	</ApplicationTemplate>
+</ArrayOfApplicationTemplate>

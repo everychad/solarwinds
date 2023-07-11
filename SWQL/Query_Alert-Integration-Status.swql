@@ -31,4 +31,4 @@ Type
     ELSE 'ERROR'
     END AS [Status Response]
 FROM Orion.ESI.IncidentService
-WHERE OperationalState != 2
+--WHERE OperationalState != 2

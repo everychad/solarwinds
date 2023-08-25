@@ -57,14 +57,18 @@ SELECT DISTINCT
 , CIDR
 , Comments
 , Location
+ --vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv--
+ -- UPDATE THE BELOW LINE TO THE NAME OF YOUR IPAM CUSTOM PROPERTY
+ -- e.g. AND ( i.CustomProperties.<custom property name> LIKE '%${SEARCH_STRING}%'
 , i.CustomProperties.IP_Subnet_Custom_Field AS [SiteName]
+ --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^--
 FROM IPAM.GroupNode i
 WHERE (GroupTypeText LIKE 'Subnet' OR GroupTypeText LIKE 'Supernet') 
- -------------------------------------------------------------------------
+ --vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv--
  -- UPDATE THE BELOW LINE TO THE NAME OF YOUR IPAM CUSTOM PROPERTY
  -- e.g. AND ( i.CustomProperties.<custom property name> LIKE '%${SEARCH_STRING}%'
  AND ( i.CustomProperties.IP_Subnet_Custom_Field LIKE '%${SEARCH_STRING}%' 
- -------------------------------------------------------------------------
+ --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^--
   OR FriendlyName LIKE '%${SEARCH_STRING}%' 
   OR Address LIKE '%${SEARCH_STRING}%' 
   OR Comments LIKE '%${SEARCH_STRING}%' 

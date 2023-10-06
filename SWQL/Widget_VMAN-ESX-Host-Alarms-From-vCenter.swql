@@ -20,7 +20,7 @@
 -- 4. Click submit.
 
 SELECT 
-  Status
+  Status AS [Status from vCenter]
 , CASE
     WHEN covt.Status = 'red' THEN '/Orion/images/StatusIcons/Small-Critical.gif'
     WHEN covt.Status = 'yellow' THEN '/Orion/images/StatusIcons/Small-Warning.gif'

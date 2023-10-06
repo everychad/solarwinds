@@ -39,7 +39,7 @@ try {
     $OrionHostname = Read-Host "Enter your Orion Hostname or IP Address: "
     $OrionCreds = Get-Credential -Message "Please enter your Orion Web Console Username and Password: "
     $NodeIP = Read-Host "What is the IP/Hostname of the node that you would like to monitor? "
-    $NodeName = Read-Host "What name do you want to associate with this node? "
+    $NodeName = Read-Host "What name do you want to call this node in SolarWinds? "
 
     #Build SW Information Service connection
     $swis = Connect-Swis -Credential $OrionCreds -Hostname $OrionHostname

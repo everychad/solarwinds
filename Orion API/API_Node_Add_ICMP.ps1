@@ -63,8 +63,10 @@ try {
     $newNodeProperties = @{
         IPAddress     = $NodeIP;
         EngineID      = $OrionPrimaryEngine.EngineID;
-        Caption       = $NodeName
+        Caption       = $NodeName;
         ObjectSubType = "ICMP";
+        #DynamicIP     = "True";
+        #DNS           = $NodeIP;
     }
     
     #Create new node

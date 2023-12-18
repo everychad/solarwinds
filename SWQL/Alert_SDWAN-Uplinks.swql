@@ -1,0 +1,38 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+-- URL: 
+-- Description: This alerts when the status of the SDWAN Uplink is in a disconnected 
+-- state
+--  
+-- Directions: 
+--  1. Create a a new alert
+--  2. In the Alert Trigger conditions section, update the dropdown called 'I want 
+--     to alert on:' to 'Custom SWQL Alert (Advanced)'. p.s. it is at the bottom 
+--     of the list.
+--  3. In the dropdown called 'Set up your SWQL condition', select 'Interfaces'.
+--  4. Past the query below into the open text box.
+
+--Custom SWQL Alert
+JOIN Orion.SdWan.NodesInterfaces ni ON ni.InterfaceID = Interfaces.InterfaceID
+WHERE ni.StatusDescription = 'Disconnected'
+--AND ni.ServiceProvider LIKE '%Verizon%'
+
+
+----------------------------------------------------------------------------
+--Optional Alert variables to be used in the alert message or notications.--
+----------------------------------------------------------------------------
+--Node Name: ${N=SwisEntity;M=Node.DisplayName}
+
+--Interface Name: ${N=SwisEntity;M=InterfaceName}
+
+--WAN Uplink Status: ${N=SWQL;M=SELECT ni.StatusDescription FROM Orion.NPM.Interfaces Interfaces JOIN Orion.SdWan.NodesInterfaces ni ON ni.InterfaceID = Interfaces.InterfaceID WHERE Interfaces.InterfaceID = ${N=SwisEntity;M=InterfaceID}}
+

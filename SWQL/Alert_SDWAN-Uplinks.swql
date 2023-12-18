@@ -11,10 +11,11 @@
 
 -- URL: 
 -- Description: This alerts when the status of the SDWAN Uplink is in a disconnected 
--- state
+-- state. Included is an additional parameter if you wanted to specify the service 
+-- provider.
 --  
 -- Directions: 
---  1. Create a a new alert
+--  1. Create a a new alert.
 --  2. In the Alert Trigger conditions section, update the dropdown called 'I want 
 --     to alert on:' to 'Custom SWQL Alert (Advanced)'. p.s. it is at the bottom 
 --     of the list.

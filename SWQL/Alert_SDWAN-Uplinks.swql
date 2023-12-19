@@ -37,3 +37,17 @@ WHERE ni.StatusDescription = 'Disconnected'
 
 --WAN Uplink Status: ${N=SWQL;M=SELECT ni.StatusDescription FROM Orion.NPM.Interfaces Interfaces JOIN Orion.SdWan.NodesInterfaces ni ON ni.InterfaceID = Interfaces.InterfaceID WHERE Interfaces.InterfaceID = ${N=SwisEntity;M=InterfaceID}}
 
+SELECT Interfaces.NodeID, Interfaces.InterfaceID, Interfaces.ObjectSubType, Interfaces.Name, Traffic.CountOfPackets, ni.StatusDescription
+FROM Orion.NPM.Interfaces Interfaces
+
+JOIN Orion.SdWan.NodesInterfaces ni ON ni.InterfaceID = Interfaces.InterfaceID
+JOIN (SELECT SUM(TotalPackets) AS [CountOfPackets], Traffic.InterfaceID
+      FROM Orion.NPM.InterfaceTraffic Traffic
+      WHERE DateTime > ADDMINUTE( ((Traffic.Interface.StatCollection * 2)*-1), GETUTCDATE())
+      --AND InterfaceID = 10
+      GROUP BY Traffic.InterfaceID) Traffic ON Traffic.InterfaceID = Interfaces.InterfaceID
+
+WHERE ni.StatusDescription = 'Active'
+AND Traffic.CountOfPackets < 100
+AND ni.ServiceProvider LIKE '%Verizon%'
+--AND Interfaces.InterfaceID = 10

@@ -22,32 +22,50 @@
 --  3. In the dropdown called 'Set up your SWQL condition', select 'Interfaces'.
 --  4. Past the query below into the open text box.
 
---Custom SWQL Alert
+--*****************************
+--*   Custom SWQL Alert # 1   *
+--*****************************
+--This is a basic example for alerting on WAN Uplink Status
 JOIN Orion.SdWan.NodesInterfaces ni ON ni.InterfaceID = Interfaces.InterfaceID
 WHERE ni.StatusDescription = 'Disconnected'
 --AND ni.ServiceProvider LIKE '%Verizon%'
 
 
-----------------------------------------------------------------------------
---Optional Alert variables to be used in the alert message or notications.--
-----------------------------------------------------------------------------
+--*****************************
+--*   Custom SWQL Alert # 2   *
+--*****************************
+--This is an advanced alert for alerting on WAN Uplink Status and low traffic rates
+
+--Join SDWAN table metrics with Interface table metrics. This allows us to use Carrier 
+--and WAN Uplink Status info
+JOIN Orion.SdWan.NodesInterfaces ni ON ni.InterfaceID = Interfaces.InterfaceID
+
+--Join the Interface Traffic table taking into account the last two statistical polling 
+--intervals for that interface. We SUM the packets per second (pps) data and trigger when 
+--pps is below a certain summed value.
+JOIN (SELECT SUM(TotalPackets) AS [CountOfPackets], Traffic.InterfaceID
+      FROM Orion.NPM.InterfaceTraffic Traffic
+      --(Traffic.Interface.StatCollection * 2)*-1) will take the last 2 polling intervals. 
+      --Update the number 2 to increase polling intervals. Default polling rate is 9 minutes. 
+      --This means it would take 9-10 minutes to trigger based on 2 polling intervals. Every 
+      --polling interval you add will increase the alert delay by 9 minutes (or any other 
+      --custom polling interval you have defined for that interface.
+      WHERE DateTime > ADDMINUTE( ((Traffic.Interface.StatCollection * 2)*-1), GETUTCDATE()) 
+      --AND InterfaceID = 10 --Used for testing purposes
+      GROUP BY Traffic.InterfaceID) Traffic ON Traffic.InterfaceID = Interfaces.InterfaceID
+
+WHERE ni.StatusDescription = 'Disconnected'
+AND Traffic.CountOfPackets < 100
+--AND ni.ServiceProvider LIKE '%Verizon%'
+--AND Interfaces.InterfaceID = 10 --Used for testing purposes
+
+--**************************************************************************
+--*Optional Alert variables to be used in the alert message or notications.*
+--**************************************************************************
 --Node Name: ${N=SwisEntity;M=Node.DisplayName}
 
 --Interface Name: ${N=SwisEntity;M=InterfaceName}
 
 --WAN Uplink Status: ${N=SWQL;M=SELECT ni.StatusDescription FROM Orion.NPM.Interfaces Interfaces JOIN Orion.SdWan.NodesInterfaces ni ON ni.InterfaceID = Interfaces.InterfaceID WHERE Interfaces.InterfaceID = ${N=SwisEntity;M=InterfaceID}}
 
-SELECT Interfaces.NodeID, Interfaces.InterfaceID, Interfaces.ObjectSubType, Interfaces.Name, Traffic.CountOfPackets, ni.StatusDescription
-FROM Orion.NPM.Interfaces Interfaces
 
-JOIN Orion.SdWan.NodesInterfaces ni ON ni.InterfaceID = Interfaces.InterfaceID
-JOIN (SELECT SUM(TotalPackets) AS [CountOfPackets], Traffic.InterfaceID
-      FROM Orion.NPM.InterfaceTraffic Traffic
-      WHERE DateTime > ADDMINUTE( ((Traffic.Interface.StatCollection * 2)*-1), GETUTCDATE())
-      --AND InterfaceID = 10
-      GROUP BY Traffic.InterfaceID) Traffic ON Traffic.InterfaceID = Interfaces.InterfaceID
-
-WHERE ni.StatusDescription = 'Active'
-AND Traffic.CountOfPackets < 100
-AND ni.ServiceProvider LIKE '%Verizon%'
---AND Interfaces.InterfaceID = 10

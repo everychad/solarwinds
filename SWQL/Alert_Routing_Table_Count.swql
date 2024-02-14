@@ -1,0 +1,7 @@
+SELECT Nodes.DisplayName, Nodes.Uri, Nodes.MachineType, COUNT(Routes.NodeID) AS [Routes per node]
+FROM Orion.Nodes AS Nodes
+--Items below this line would be added to the SWQL Alert
+JOIN Orion.Routing.RoutingTable Routes on Routes.NodeID = Nodes.NodeID
+GROUP BY Nodes.DisplayName, Nodes.Uri, Nodes.MachineType
+HAVING COUNT(Routes.NodeID) > 10
+AND Nodes.MachineType LIKE '%Catalyst%'

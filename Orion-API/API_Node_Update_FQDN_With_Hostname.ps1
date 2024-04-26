@@ -15,7 +15,7 @@
   Author:         Chad Every
   Creation Date:  2024/APR/26
   Purpose/Change: Initial script development
-  Website:        https://github.com/everychad/solarwinds/blob/master/Orion%20API/API_Node_Update_FQDN_With_Hostname.ps1
+  Website:        https://github.com/everychad/solarwinds/blob/master/Orion-API/API_Node_Update_FQDN_With_Hostname.ps1
   Legal:          Scripts are not supported under any SolarWinds support program or service. Scripts are provided AS IS 
                   without warranty of any kind. SolarWinds further disclaims all warranties including, without limitation, 
                   any implied warranties of merchantability or of fitness for a particular purpose. The risk arising out 
@@ -46,8 +46,8 @@ $swis = Connect-Swis -Credential $OrionCreds -Hostname $OrionHostname
 $NodeData = Get-SwisData `
     -SwisConnection $swis `
     -Query "SELECT Caption, IPAddress, Uri
-            FROM Orion.Nodes"
-            #WHERE Vendor = 'Windows'"
+            FROM Orion.Nodes
+            WHERE Vendor = 'Windows'"
 
 #Loop through each entry from the query above and update the Node Caption, if applicable.
 Foreach ($node in $NodeData) {

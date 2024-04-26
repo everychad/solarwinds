@@ -52,10 +52,11 @@ $NodeData = Get-SwisData `
 #Loop through each entry from the query above and update the Node Caption, if applicable.
 Foreach ($node in $NodeData) {
   If ( $node.Caption -like "*.*" -and $node.Caption -ne $node.IPAddress) {
-    Write-Output "Node Update: $($node.Caption) removing FQDN, updating to $($node.Caption.Split('.')[0])..."
+    $TruncatedNodeName = $node.Caption.Split('.')[0]
+    Write-Output "Node Update: $($node.Caption) removing FQDN, updating to $TruncatedNodeName..."
     
     #Uncomment out the line below when ready to push changes to production. Run script first with this commented out to make sure the correct nodes are being updated.
-    #Set-SwisObject $swis -Uri $($node.Uri) -Properties @{Caption = $($node.Caption.Split(".")[0])}
+    #Set-SwisObject $swis -Uri $($node.Uri) -Properties @{Caption = $TruncatedNodeName}
   }
   Else {
      Write-Output "Node Skip: $($node.Caption)..."

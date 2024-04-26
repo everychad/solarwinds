@@ -54,6 +54,7 @@ Foreach ($node in $NodeData) {
   If ( $node.Caption -like "*.*" -and $node.Caption -ne $node.IPAddress) {
     Write-Output "Node Update: $($node.Caption) removing FQDN, updating to $($node.Caption.Split('.')[0])..."
     
+    #Uncomment out the line below when ready to push changes to production. Run script first with this commented out to make sure the correct nodes are being updated.
     #Set-SwisObject $swis -Uri $($node.Uri) -Properties @{Caption = $($node.Caption.Split(".")[0])}
   }
   Else {

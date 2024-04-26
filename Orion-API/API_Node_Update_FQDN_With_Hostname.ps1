@@ -15,7 +15,7 @@
   Author:         Chad Every
   Creation Date:  2024/APR/26
   Purpose/Change: Initial script development
-  Website:        https://github.com/everychad/solarwinds/blob/master/Orion%20API/API_Node_Update_FQDN_With_Hostname.ps1
+  Website:        https://github.com/everychad/solarwinds
   Legal:          Scripts are not supported under any SolarWinds support program or service. Scripts are provided AS IS 
                   without warranty of any kind. SolarWinds further disclaims all warranties including, without limitation, 
                   any implied warranties of merchantability or of fitness for a particular purpose. The risk arising out 

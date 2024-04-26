@@ -45,18 +45,18 @@ $swis = Connect-Swis -Credential $OrionCreds -Hostname $OrionHostname
 #Query Orion Nodes table.  This query can be expanded if you need to narrow down the resutls.
 $NodeData = Get-SwisData `
     -SwisConnection $swis `
-    -Query "SELECT Caption, Uri
-            FROM Orion.Nodes
-            WHERE Vendor = 'Windows'"
+    -Query "SELECT Caption, IPAddress, Uri
+            FROM Orion.Nodes"
+            #WHERE Vendor = 'Windows'"
 
 #Loop through each entry from the query above and update the Node Caption, if applicable.
 Foreach ($node in $NodeData) {
-  If ( $node.Caption -like "*.*" ) {
-    Write-Output "Node: $($node.Caption) removing FQDN, updating to $($node.Caption.Split('.')[0])..."
+  If ( $node.Caption -like "*.*" -and $node.Caption -ne $node.IPAddress) {
+    Write-Output "Node Update: $($node.Caption) removing FQDN, updating to $($node.Caption.Split('.')[0])..."
     
     #Set-SwisObject $swis -Uri $($node.Uri) -Properties @{Caption = $($node.Caption.Split(".")[0])}
   }
   Else {
-     Write-Output "Node: $($node.Caption) skipping..."
+     Write-Output "Node Skip: $($node.Caption)..."
   }
 }

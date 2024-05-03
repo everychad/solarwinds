@@ -3,7 +3,7 @@
   This script will move an agent node from one polling engine to another.
 .DESCRIPTION
   This script will call into the Orion API and move a group of agent nodes from one engine to another. You will need to 
-  udpate the SWQL ($query) to only capture the nodes you wish to migrate. You will also need to know the EngineID of the
+  update the SWQL ($query) to only capture the nodes you wish to migrate. You will also need to know the EngineID of the
   Polling engine you wish to migrate nodes to.
 .PARAMETER None
   <none>
@@ -16,7 +16,7 @@
   Author:         Chad Every
   Creation Date:  2024/MAY/03
   Purpose/Change: Initial script development
-  Website:        
+  Website:        https://thwack.solarwinds.com/content-exchange/the-orion-platform/m/scripts/4223
   Legal:          Scripts are not supported under any SolarWinds support program or service. Scripts are provided AS IS 
                   without warranty of any kind. SolarWinds further disclaims all warranties including, without limitation, 
                   any implied warranties of merchantability or of fitness for a particular purpose. The risk arising out 

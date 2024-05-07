@@ -71,7 +71,9 @@ try {
     #loop through all results returned by the query
     Foreach ($Volume in $QueryData) {
 
-        Set-SwisObject $swis -Uri $Volume.uri -Properties @{ $Volume.Level1Value = '60'}
+        Write-Output "Updating Warning Level threshold on volume: $($Volume.VolumeName) on $($Volume.NodeName)"
+        #Uncomment when ready to push changes to Prod
+        #Set-SwisObject $swis -Uri $Volume.uri -Properties @{ $Volume.Level1Value = '60'}
     }
 }
 catch {

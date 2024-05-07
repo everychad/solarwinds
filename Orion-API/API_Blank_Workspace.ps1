@@ -30,31 +30,9 @@
 [CmdletBinding()]
 param ()
 
-
-function ModifyNodeCaption {
-  param (
-    [string] $sysname,
-    [string] $caption,
-    [string] $uri
-  )
-  
-  If ( $null -eq $sysname -or "" -eq $sysname ) {
-    $str = "$($caption) does not have a relevant Node SysName, skipping..."
-  }
-  Elseif ( $sysname -ne $caption ) {
-    $str = "Setting Node Name: $($caption) to $($sysname)"
-    Set-SwisObject $swis -Uri $uri -Properties @{ Caption = $sysname }
-  }
-  Else {
-    $str = "$($caption) is already updated"
-  }
-
-  return $str
-}
-
-#---------------------------------------------------------------------------
-#Start of script
-
+<#----------------------------------------------------#>
+<#------            Start of script              -----#>
+<#----------------------------------------------------#>
 
 #Orion deployment connection Variables
 $OrionHostname = Read-Host "Enter your Orion Hostname or IP Address: "
@@ -77,7 +55,7 @@ $query = @"
 #Query Orion Nodes table
 $Data = Get-SwisData -SwisConnection $swis -Query $query
 
-ForEach-Object ($item in $Data) {
+ForEach ($item in $Data) {
   Write-Output "Doing a thing"
 
     <# EXAMPLE Invoke-SwisVerb
@@ -94,7 +72,13 @@ ForEach-Object ($item in $Data) {
 
 
     <# EXAMPLE Set-SwisObject
-    #Set-SwisObject $swis -Uri $item.uri -Properties @{ $item.Level1Value = '60'}
+    $SwisProperties = @{
+      $item.value = 1
+    }
+
+    #This next line is intentionally left commented out. Uncomment the line to actually process the results.
+    #Set-SwisObject $swis -Uri $item.uri -Properties $SwisProperties
     #>
+
 
 }

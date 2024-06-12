@@ -61,7 +61,7 @@ try {
 
     #Craft necessary URL/URI for Node Custom Property
     $swisuri = "swis://$OrionHostname/Orion/Orion.Nodes/NodeID=$NodeID/CustomProperties"
-    $url = "https://$OrionHostname`:17778/SolarWinds/InformationService/v3/Json/$swisuri"
+    $url = "https://$OrionHostname`:17774/SolarWinds/InformationService/v3/Json/$swisuri"
 
     #Format Custom Property name/value into JSON. e.g. { "name":  "value" }
     $json = @{ $CustomPropertyName = $CustomPropertyValue } | ConvertTo-Json

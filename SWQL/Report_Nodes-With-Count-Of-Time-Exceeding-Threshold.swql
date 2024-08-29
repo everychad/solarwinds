@@ -1,0 +1,43 @@
+SELECT
+thresholds.NodeName 
+
+--Show avgerage of Max Memory Used over specificed time
+,ROUND(AVG(MaxMemoryUsed / TotalMemory * 100.00),2) AS [AvgOfMaxMemoryUsedPercent]
+
+--Percentage of polls with a Warning or critical value
+,ROUND((
+    --This sums up all of the 1's from the CASE statement
+    (SUM 
+        --Case statement finds when the metric has passed a threshold and then returns a 1, 
+        --when below the threshold it returns a 0
+        (CASE
+            WHEN (MaxMemoryUsed / TotalMemory * 100.00) > thresholds.WarningThreshold THEN 1
+            ELSE 0
+         END)
+    --The COUNT of NodeID shows the total number of polls for the given metric. This is divided 
+    --from the SUM of the CASE to calculate the percent of polls that were passed the threshold out of all total polls.
+    ) / (COUNT(NodeID) * 1.00) * 100.00 
+    ),2) AS [PercentOfPollsWarningCriticalBreached]
+
+--Percentage of polls with a critical value
+,ROUND((
+    --This sums up all of the 1's from the CASE statement
+    (SUM 
+        --Case statement finds when the metric has passed a threshold and then returns a 1, 
+        --when below the threshold it returns a 0
+        (CASE
+            WHEN (MaxMemoryUsed / TotalMemory * 100.00) > thresholds.CriticalThreshold THEN 1
+            ELSE 0
+        END)
+    --The COUNT of NodeID shows the total number of polls for the given metric. This is divided 
+    --from the SUM of the CASE to calculate the percent of polls that were passed the threshold out of all total polls.
+    ) / (COUNT(NodeID) * 1.00) * 100.00 ),2) AS [PercentOfPollsCriticalOnlyBreached]
+FROM Orion.CPULoad load
+
+--This table contains the node memory thresholds and node name
+JOIN (SELECT InstanceId AS [NodeID],t.Node.Caption AS [NodeName],Level1Value AS [WarningThreshold],Level2Value AS [CriticalThreshold]
+        FROM Orion.PercentMemoryUsedThreshold t
+     ) thresholds ON load.NodeID = thresholds.NodeID
+WHERE DateTime > ADDDAY(-1,GETUTCDATE())
+GROUP BY thresholds.NodeName
+ORDER BY [PercentOfPollsWarningCriticalBreached] DESC

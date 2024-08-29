@@ -50,7 +50,7 @@ $query = "
         ,Interfaces.URI
         ,Interfaces.Status
     FROM Orion.NPM.Interfaces AS Interfaces
-    WHERE Interfaces.InterfaceID = 2
+    WHERE Interfaces.InterfaceID = 8
 "
 
 $results = Get-SwisData $swis $query

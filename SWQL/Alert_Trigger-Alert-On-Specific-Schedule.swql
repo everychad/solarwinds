@@ -10,27 +10,38 @@
 -- out of the use of or inability to use the scripts or documentation.
 
 -- URL:
--- Description: 
+-- Description: The purpose of this was to create an alert that could be triggered 
+--   on a specific schedule. This was mainly for setting nodes into a recurring 
+--   maintenance mode. This is only the first part of triggering the alert. The second 
+--   part, an alert action of executing an external program, to kick off a script that 
+--   calls into the Orion/SolarWinds Platform API to unmanage/mute alert on a node 
+--   won't be covered in this discussion.
 --  
 -- Directions:
---  
+--  1. Create a a new alert.
+--  2. In the Alert Trigger conditions section, update the dropdown called 'I want 
+--     to alert on:' to 'Custom SWQL Alert (Advanced)'. p.s. it is at the bottom 
+--     of the list.
+--  3. In the dropdown called 'Set up your SWQL condition', select 'Node'.
+--  4. Past the query below into the open text box.
+--  5. Update the last few lines to match the nodes that you want to include in this alert.
 
 -------------------------------------
 -- THIS IS STILL A WORK IN PROGESS --
 -------------------------------------
 
-SELECT
-   NodeID
-  ,Caption
-  ,DOWNSAMPLE(GETDATE(),'00:00:01') AS [DATE Current]
-  ,DAY(GETDATE()) AS [DATE Day]
-  ,WEEKDAY(GETDATE()) AS [DATE Weekday]
-  ,HOUR(GETDATE()) AS [DATE Hour]
-  ,MINUTE(GETDATE()) AS [DATE Minute]
-FROM Orion.Nodes nodes 
+--SELECT
+--   NodeID
+--  ,Caption
+--  ,DOWNSAMPLE(GETDATE(),'00:00:01') AS [DATE Current]
+--  ,DAY(GETDATE()) AS [DATE Day]
+--  ,WEEKDAY(GETDATE()) AS [DATE Weekday]
+--  ,HOUR(GETDATE()) AS [DATE Hour]
+--  ,MINUTE(GETDATE()) AS [DATE Minute]
+--FROM Orion.Nodes nodes 
 
 -----------------------------------------------------------------------------------------------
--- Copy everything below this line into a custom an Advanced SWQL Alert, entity: Orion.Nodes --
+-- Copy everything below this line into a custom an Advanced SWQL Alert, entity: Nodes --
 -----------------------------------------------------------------------------------------------
 
 WHERE 1=1

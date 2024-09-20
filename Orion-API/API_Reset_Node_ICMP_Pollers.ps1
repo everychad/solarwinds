@@ -2,7 +2,7 @@
 .SYNOPSIS
   This script will add an ICMP node to Orion.
 .DESCRIPTION
-  This script will call into the Orion API and add an ICMP only node. It creates the necessary pollers on the back end.
+  This script will call into the Orion API and reset the ICMP pollers for a defined list of nodes.
 .PARAMETER None
   <none>
 .INPUTS
@@ -12,7 +12,7 @@
 .NOTES
   Version:        1.0
   Author:         Chad Every
-  Creation Date:  2022/APR/08
+  Creation Date:  2024/SEP/20
   Purpose/Change: Initial script development
   Website:        https://github.com/everychad/solarwinds
   Legal:          Scripts are not supported under any SolarWinds support program or service. Scripts are provided AS IS 

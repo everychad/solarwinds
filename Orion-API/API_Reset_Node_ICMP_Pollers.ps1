@@ -47,7 +47,7 @@ try {
     $swql = @" 
         SELECT NodeID, Caption, uri
         FROM Orion.Nodes
-        WHERE NodeID IN ('936')
+        WHERE NodeID IN ('XX')
 "@
 
     #Call into the Orion API to get data

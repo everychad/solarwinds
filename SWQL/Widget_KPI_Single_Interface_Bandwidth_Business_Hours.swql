@@ -16,10 +16,14 @@
 --  Update the WHERE clause to include the InterfaceID
 
 SELECT 
- ROUND(AVG(InAveragebps)/1024/1024,2) AS [AVG Download (Mbps)]
-,ROUND(MAX(InMaxbps)/1024/1024,2) AS [MAX Download (Mbps)]
-,ROUND(AVG(OutAveragebps)/1024/1024,2) AS [AVG Upload (Mbps)]
-,ROUND(MAX(OutMaxbps)/1024/1024,2) AS [MAX Upload (Mbps)]
+    (SELECT ROUND(AVG(InAveragebps)/1024/1024,2) AS [a] FROM Orion.NPM.InterfaceTraffic WHERE DateTime > ADDSECOND(-910,GETUTCDATE())) AS [AVG 15Min Download (Mbps)]
+   ,(SELECT ROUND(MAX(InAveragebps)/1024/1024,2) AS [a] FROM Orion.NPM.InterfaceTraffic WHERE DateTime > ADDSECOND(-910,GETUTCDATE())) AS [MAX 15Min Download (Mbps)]
+   ,(SELECT ROUND(AVG(OutAveragebps)/1024/1024,2) AS [a] FROM Orion.NPM.InterfaceTraffic WHERE DateTime > ADDSECOND(-910,GETUTCDATE())) AS [AVG 15Min Upload (Mbps)]
+   ,(SELECT ROUND(MAX(OutAveragebps)/1024/1024,2) AS [a] FROM Orion.NPM.InterfaceTraffic WHERE DateTime > ADDSECOND(-910,GETUTCDATE())) AS [MAX 15Min Upload (Mbps)]
+--,ROUND(AVG(InAveragebps)/1024/1024,2) AS [AVG Upload (Mbps)]
+--,ROUND(MAX(InMaxbps)/1024/1024,2) AS [MAX Download (Mbps)]
+--,ROUND(AVG(OutAveragebps)/1024/1024,2) AS [AVG Upload (Mbps)]
+--,ROUND(MAX(OutMaxbps)/1024/1024,2) AS [MAX Upload (Mbps)]
 ,i.Interface.Node.Caption AS [Node Name]
 ,i.Interface.InterfaceCaption AS [Interface Name]
 FROM Orion.NPM.InterfaceTraffic i

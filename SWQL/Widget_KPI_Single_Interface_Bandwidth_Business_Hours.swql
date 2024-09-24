@@ -1,0 +1,35 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+-- URL: N/A
+-- Description: 
+--  This query shows the per day usage of a single interface during business hours.
+-- Directions: 
+--  Update the WHERE clause to include the InterfaceID
+
+SELECT 
+ ROUND(AVG(InAveragebps)/1024/1024,2) AS [AVG Download (Mbps)]
+,ROUND(MAX(InMaxbps)/1024/1024,2) AS [MAX Download (Mbps)]
+,ROUND(AVG(OutAveragebps)/1024/1024,2) AS [AVG Upload (Mbps)]
+,ROUND(MAX(OutMaxbps)/1024/1024,2) AS [MAX Upload (Mbps)]
+,i.Interface.Node.Caption AS [Node Name]
+,i.Interface.InterfaceCaption AS [Interface Name]
+FROM Orion.NPM.InterfaceTraffic i
+WHERE 1=1
+    AND InterfaceID IN ('273')
+    AND DAY(TOLOCAL(DateTime)) = DAY(GETDATE()) --Match day
+    AND MONTH(TOLOCAL(DateTime)) = MONTH(GETDATE()) --Match month
+    AND YEAR(TOLOCAL(DateTime)) = YEAR(GETDATE()) --Match year
+    --Below items can be used for 'Business Hours'
+    --AND WEEKDAY(TOLOCAL(DateTime)) IN (1,2,3,4,5) --Monday through Friday
+    --AND HOUR(TOLOCAL(DateTime)) > 9 --Start at 9am (24hr format)    
+    --AND HOUR(TOLOCAL(DateTime)) < 17 --End at 5pm (24hr format)
+GROUP BY i.Interface.Node.Caption, i.Interface.InterfaceCaption

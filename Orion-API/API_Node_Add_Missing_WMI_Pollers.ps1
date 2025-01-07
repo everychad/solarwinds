@@ -38,9 +38,8 @@ param ()
 
 try {
     #Orion deployment connection Variables
-    #$OrionHostname = Read-Host "Enter your Orion Hostname or IP Address: "
-    #$OrionCreds = Get-Credential -Message "Please enter your Orion Web Console Username and Password: "
-    #$NodeID = Read-Host "What is the NodeID of the node that you would like reset ICMP Pollers? "
+    $OrionHostname = Read-Host "Enter your Orion Hostname or IP Address: "
+    $OrionCreds = Get-Credential -Message "Please enter your Orion Web Console Username and Password: "
 
     #Build SW Information Service connection
     $swis = Connect-Swis -Credential $OrionCreds -Hostname $OrionHostname

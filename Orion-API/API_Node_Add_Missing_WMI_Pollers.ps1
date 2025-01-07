@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  This script will add an ICMP node to Orion.
+  This script will add missing pollers to a WMI node in Orion.
 .DESCRIPTION
   This script will call into the Orion API and add missing WMI Pollers for Windows Servers. This can happen when the Windows 
   Server is originally polled via SNMP and is changed to WMI polling. A Network Discovery would still be needed to readd all

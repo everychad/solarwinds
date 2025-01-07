@@ -45,7 +45,7 @@ try {
     #Build SW Information Service connection
     $swis = Connect-Swis -Credential $OrionCreds -Hostname $OrionHostname
 
-    #Get Primary Orion Server Engine Info
+    #Get list of WMI nodes that do not have a CPU or Memory poller assigned to them. This excludes Windows Server 2003 and 2008
     $swql = @" 
         SELECT
         n.Caption
@@ -85,12 +85,14 @@ try {
 
     #Add all entries for Poller
     foreach ($node in $NodeResetList){ 
+        #Build base poller info
         $poller = @{
             NetObject     = "N:" + $node.NodeID;
             NetObjectType = "N";
             NetObjectID   = $node.NodeID;
         }
 
+        #conditional statements to add CPU/Memory pollers if missing
         if ($node.CPUPollerType -ne "N.Cpu.WMI.WindowsPct") {
             $poller["PollerType"] = "N.Cpu.WMI.WindowsPct";
 
@@ -105,6 +107,7 @@ try {
         }
     }
     
+    #Done
     Write-Output "Finished..."
 }
 catch {

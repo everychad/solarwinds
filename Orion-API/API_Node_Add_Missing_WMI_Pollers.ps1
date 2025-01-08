@@ -76,7 +76,6 @@ $XMLElementPoller = 'CPU & Memory'
 $XMLLeefPoller = 'CPU & Memory by SolarWinds'
 
 $ListOfNodes = Get-SwisData $swis $swql
-#$ListOfNodes = $ListOfNodes | ForEach-Object {[string]$_}
 # $ListOfNodes = 60, 61, 62, 63, 64
 
 foreach ($Node in $ListOfNodes)
@@ -114,44 +113,6 @@ foreach ($Node in $ListOfNodes)
         Write-Host "     Node Name: $($Node.Caption) - Poller Import Completed"
     }
 }
-
-
-<#
-    #Call into the Orion API to get data
-    $NodeResetList = Get-SwisData -SwisConnection $swis -Query $swql
-
-    #Check that query returned data
-    if ($null -eq $NodeResetList -OR $NodeResetList -eq "") {
-        Throw "INFO: Unable to find any nodes with that match the query..."
-    }
-
-    #Add all entries for Poller
-    foreach ($node in $NodeResetList){ 
-        #Build base poller info
-        $poller = @{
-            NetObject     = "N:" + $node.NodeID;
-            NetObjectType = "N";
-            NetObjectID   = $node.NodeID;
-        }
-
-        #conditional statements to add CPU/Memory pollers if missing
-        if ($node.CPUPollerType -ne "N.Cpu.WMI.WindowsPct") {
-            $poller["PollerType"] = "N.Cpu.WMI.WindowsPct";
-
-            Write-Output "Adding WMI CPU poller to $($node.Caption)"
-            New-SwisObject $swis -EntityType "Orion.Pollers" -Properties $poller | Out-Null
-        }
-        if ($node.MemPollerType -ne "N.Memory.WMI.Windows") {
-            $poller["PollerType"] = "N.Memory.WMI.Windows";
-
-            Write-Output "Adding WMI Memory poller to $($node.Caption)"
-            New-SwisObject $swis -EntityType "Orion.Pollers" -Properties $poller | Out-Null
-        }
-    }
-    
-    #Done
-    Write-Output "Finished..."
-#>
 
 }
 catch {

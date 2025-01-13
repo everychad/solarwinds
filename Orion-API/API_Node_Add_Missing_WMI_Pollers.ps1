@@ -76,42 +76,45 @@ $XMLElementPoller = 'CPU & Memory'
 $XMLLeefPoller = 'CPU & Memory by SolarWinds'
 
 $ListOfNodes = Get-SwisData $swis $swql
-# $ListOfNodes = 60, 61, 62, 63, 64
 
 foreach ($Node in $ListOfNodes)
 {
-    Write-Host "Node Name: $($Node.Caption), NodeID: $($Node.NodeID) - Enable CPU & Memory Polling"
-    
-    #Start List Resources job
-    $JobID = Invoke-SwisVerb $swis Orion.Nodes ScheduleListResources $($Node.NodeID)
-    
-    #Check status of list resources job
-    do
-    {
-        Start-Sleep -Seconds 5
-        $JobStatus = Invoke-SwisVerb $swis Orion.Nodes GetScheduledListResourcesStatus @($JobID.'#text', $Node.NodeID)
-        Write-Host "     Node Name: $($Node.Caption), NodeID: $($Node.NodeID) - JobID:" $JobID.'#text' "- Status:" $JobStatus.'#text'
-    } while ($JobStatus.'#text' -ne "ReadyForImport")
-    
-    #Get results of list resouces job
-    $JobResults = Invoke-SwisVerb $swis Orion.Nodes GetListResourcesResult @($JobID.'#text', $Node.NodeID)
-    
-    #Modify XML results to be selective on import
-    $XMLElementBranch = $JobResults.DiscoveryResultExportItem.Children.DiscoveryResultExportItem | Where-Object {$_.DisplayName.'#text' -eq $XMLElementPoller} 
-    $XMLElementBranch.IsSelected = 'true'
-    $XMLElementBranch.DisplayName.'#text' = 'CPU &amp; Memory'
-    $XMLLeefPollerID = $JobResults.DiscoveryResultExportItem.Children.DiscoveryResultExportItem.Children.DiscoveryResultExportItem.DisplayName | Where-Object '#text' -eq $XMLLeefPoller | Select-Object Id
-    $XMLLeefPollerID = [int]$XMLLeefPollerID.Id - 1
-    $XMLLeef = $JobResults.DiscoveryResultExportItem.Children.DiscoveryResultExportItem.Children.DiscoveryResultExportItem | Where-Object Id -EQ $XMLLeefPollerID 
-    $XMLLeef.IsSelected = 'true'
-    $XMLLeef.DisplayName.'#text' = 'CPU &amp; Memory by SolarWinds'
-    
-    #Import results
-    $JobUpdate = Invoke-SwisVerb $swis Orion.Nodes ImportSelectedListResourcesResult @($JobID.'#text', $Node.NodeID, $JobResults)
-    Write-Host "     Node Name: $($Node.Caption), NodeID: $($Node.NodeID) - JobID:" $JobID.'#text' " - Status:" $JobUpdate.Id "- Poller Import Completed"
-    if ($JobUpdate.Id -eq 1) {
-        Write-Host "     Node Name: $($Node.Caption) - Poller Import Completed"
-    }
+  Write-Host "Node Name: $($Node.Caption), NodeID: $($Node.NodeID) - Enable CPU & Memory Polling"
+  
+  #Start List Resources job
+  $JobID = Invoke-SwisVerb $swis Orion.Nodes ScheduleListResources $($Node.NodeID)
+  
+  #Check status of list resources job
+  do
+  {
+      Start-Sleep -Seconds 5
+      $JobStatus = Invoke-SwisVerb $swis Orion.Nodes GetScheduledListResourcesStatus @($JobID.'#text', $Node.NodeID)
+      Write-Host "     Node Name: $($Node.Caption), NodeID: $($Node.NodeID) - JobID:" $JobID.'#text' "- Status:" $JobStatus.'#text'
+  } while ($JobStatus.'#text' -ne "ReadyForImport")
+  
+  #Get results of list resouces job
+  $JobResults = Invoke-SwisVerb $swis Orion.Nodes GetListResourcesResult @($JobID.'#text', $Node.NodeID)
+  
+  #Modify XML results to be selective on import
+  $XMLElementBranch = $JobResults.DiscoveryResultExportItem.Children.DiscoveryResultExportItem | Where-Object {$_.DisplayName.'#text' -eq $XMLElementPoller} 
+  $XMLElementBranch.IsSelected = 'true'
+  $XMLElementBranch.DisplayName.'#text' = 'CPU &amp; Memory'
+  $XMLLeefPollerID = $JobResults.DiscoveryResultExportItem.Children.DiscoveryResultExportItem.Children.DiscoveryResultExportItem.DisplayName | Where-Object '#text' -eq $XMLLeefPoller | Select-Object Id
+  $XMLLeefPollerID = [int]$XMLLeefPollerID.Id - 1
+  $XMLLeef = $JobResults.DiscoveryResultExportItem.Children.DiscoveryResultExportItem.Children.DiscoveryResultExportItem | Where-Object Id -EQ $XMLLeefPollerID 
+  $XMLLeef.IsSelected = 'true'
+  $XMLLeef.DisplayName.'#text' = 'CPU &amp; Memory by SolarWinds'
+  
+  #Import results
+  $JobUpdate = Invoke-SwisVerb $swis Orion.Nodes ImportSelectedListResourcesResult @($JobID.'#text', $Node.NodeID, $JobResults)
+  Write-Host "     Node Name: $($Node.Caption), NodeID: $($Node.NodeID) - JobID:" $JobID.'#text' " - Status:" $JobUpdate.Id "- Poller Import Completed"
+  if ($JobUpdate.Id -eq 1) {
+      Write-Host "     Node Name: $($Node.Caption) - Poller Import Completed"
+  }
+}
+
+if ($null -eq $ListOfNodes) {
+  Write-Host "Complete: No nodes found with missing CPU/Memory pollers"
 }
 
 }

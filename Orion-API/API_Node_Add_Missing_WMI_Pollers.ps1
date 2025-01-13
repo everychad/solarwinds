@@ -16,7 +16,7 @@
   Author:         Chad Every
   Creation Date:  2025/JAN/06
   Purpose/Change: Initial script development
-  Website:        https://github.com/everychad/solarwinds
+  Website:        https://github.com/everychad/solarwinds/blob/master/Orion-API/API_Node_Add_Missing_WMI_Pollers.ps1
   Legal:          Scripts are not supported under any SolarWinds support program or service. Scripts are provided AS IS 
                   without warranty of any kind. SolarWinds further disclaims all warranties including, without limitation, 
                   any implied warranties of merchantability or of fitness for a particular purpose. The risk arising out 
@@ -38,8 +38,8 @@ param ()
 
 try {
     #Orion deployment connection Variables
-    $OrionHostname = Read-Host "Enter your Orion Hostname or IP Address: "
-    $OrionCreds = Get-Credential -Message "Please enter your Orion Web Console Username and Password: "
+    $OrionHostname = Read-Host "Enter your SolarWinds Platform Hostname or IP Address: "
+    $OrionCreds = Get-Credential -Message "Please enter your SolarWinds Platform Web Console Username and Password: "
 
     #Build SW Information Service connection
     $swis = Connect-Swis -Credential $OrionCreds -Hostname $OrionHostname

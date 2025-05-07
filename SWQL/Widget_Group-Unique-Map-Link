@@ -1,0 +1,34 @@
+-- Scripts are not supported under any SolarWinds support program or service. 
+-- Scripts are provided AS IS without warranty of any kind. SolarWinds further 
+-- disclaims all warranties including, without limitation, any implied warranties 
+-- of merchantability or of fitness for a particular purpose. The risk arising 
+-- out of the use or performance of the scripts and documentation stays with you. 
+-- In no event shall SolarWinds or anyone else involved in the creation, 
+-- production, or delivery of the scripts be liable for any damages whatsoever 
+-- (including, without limitation, damages for loss of business profits, business 
+-- interruption, loss of business information, or other pecuniary loss) arising 
+-- out of the use of or inability to use the scripts or documentation.
+
+--Directions for use
+--** Create a new Group Custom Property called 'CustomGroupMap'
+--** For any group that you want to point to a custom map, update the CustomGroupMap 
+--   Custom Property with the MAP UID, found in the address bar when viewing that 
+--   map. e.g. 'MAPS-4d4dd4f4-9294-4e92-b018-9619638ef5ec'
+
+
+-- 1. On a Group Details page, add a widget called ‘Custom Query’
+-- 2. Edit that dashboard page and paste the query into the query box.
+-- 3. Click submit.
+
+SELECT 
+ --Is group custom property is not defined, then default to the builtin group map.
+ CASE WHEN g.CustomProperties.CustomGroupMap IS NOT NULL THEN 'Custom Map Link' ELSE 'Default Map Link' END AS [GroupMap]
+ --Build URL for either default group map or custom map.
+,CASE 
+    WHEN g.CustomProperties.CustomGroupMap IS NOT NULL THEN CONCAT('/apps/maps/viewer/', g.CustomProperties.CustomGroupMap)
+    ELSE CONCAT('/apps/maps/staticsubview?NetObject=C:',g.ContainerID,'&ViewID=',v.ViewID,'&opid=Orion.Groups_',g.ContainerID)
+    END AS [_LinkFor_GroupMap]
+FROM Orion.Groups g
+--Join to pull in correct ViewID for Group Details page. Used to help craft URL for Maps.
+JOIN (SELECT ViewID FROM Orion.Views WHERE ViewGroupName = 'Group Details' AND ViewTitle = 'Map') v ON 1=1 
+WHERE g.ContainerID = ${ID}

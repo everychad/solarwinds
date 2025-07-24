@@ -1,9 +1,8 @@
 <#
 .SYNOPSIS
-  This script will update a node with a FQDN to only its hostname.
+  This script will update a node with a new IP Address. Script will prompt for details.
 .DESCRIPTION
-  There are times where nodes will be onboraded with their hostname and other times they might be onboarded with their FQDN. 
-  This script will strip out the domain name from the FQDN and then update the node Caption with only the hostname.
+  This script was built to test updating an IP Address for a node via the API.
 .PARAMETER None
   <none>
 .INPUTS
@@ -13,7 +12,7 @@
 .NOTES
   Version:        1.0
   Author:         Chad Every
-  Creation Date:  2024/APR/26
+  Creation Date:  2025/JUL/24
   Purpose/Change: Initial script development
   Website:        https://github.com/everychad/solarwinds/blob/master/Orion-API/API_Node_Update_FQDN_With_Hostname.ps1
   Legal:          Scripts are not supported under any SolarWinds support program or service. Scripts are provided AS IS 
